@@ -10,10 +10,10 @@ pd.set_option('max_columns', 50)
 
 if len(sys.argv)>1:
 
-	csvloss = pd.read_csv('../dat/curr_udplatency.csv', error_bad_lines=False) 
-	csvjitter = pd.read_csv('../dat/curr_udpjitter.csv', error_bad_lines=False)
-	csvmspeeddown = pd.read_csv('../dat/curr_httpgetmt.csv', error_bad_lines=False)
-	csvmspeedup = pd.read_csv('../dat/curr_httppostmt.csv', error_bad_lines=False)	
+	csvloss = pd.read_csv('dat/curr_udplatency.csv', error_bad_lines=False) 
+	csvjitter = pd.read_csv('dat/curr_udpjitter.csv', error_bad_lines=False)
+	csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)
+	csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)	
 
 	house=int(sys.argv[1])
 
@@ -55,11 +55,11 @@ if len(sys.argv)>1:
 		#print "speed:"
 		#print speed
 		print "for user:"
-		print "sudo tc qdisc add dev eth0 root handle 1:0 netem delay " + str(latency)+"ms "+ str(jitterup) + "ms loss "+str(percentloss)+"%"
-		print "sudo qdisc add dev eth0 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit"		
+		print "sudo tc qdisc add dev eth1 root handle 1:0 netem delay " + str(latency/2)+"ms "+ str(jitterup) + "ms loss "+str(percentloss)+"%"
+		print "sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit limit 500000000 burst 100000"		
 		print "for server:"
-		print "sudo tc qdisc add dev eth0 root netem delay " + str(latency)+"ms "+ str(jitterdown) + "ms loss "+str(percentloss)+"%"
-		print "sudo tc qdisc add dev eth0 parent 1:1 handle 10: tbf rate "+str(downspeed)+"kbit"
+		print "sudo tc qdisc add dev eth1 root netem delay " + str(latency/2)+"ms "+ str(jitterdown) + "ms loss "+str(percentloss)+"%"
+		print "sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(downspeed)+"kbit limit 500000000 burst 100000"
 
 else:
 	print "Please input a house_ID"
