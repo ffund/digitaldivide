@@ -17,8 +17,7 @@ tofifteen=[]
 plus=[]
 
 for i in uniquedown:
-	downspeed = (csvmspeeddown[csvmspeeddown.unit_id == i]['bytes_sec']).mean() * .0000080
-	downs.append(downspeed)
+	downs = [(csvmspeeddown[csvmspeeddown.unit_id == i]['bytes_sec']).mean() * .0000080 for i in uniquedown]
 	'''#print "avg DL of house "+str(i)+" : "+str(downspeed)
 	if downspeed < 5:
 		tofive.append(downspeed)
