@@ -10,10 +10,10 @@ pd.set_option('max_columns', 50)
 
 if len(sys.argv)>1:
 
-	csvloss = pd.read_csv('curr_udplatency.csv', error_bad_lines=False) 
-	csvjitter = pd.read_csv('curr_udpjitter.csv', error_bad_lines=False)
-	csvmspeeddown = pd.read_csv('curr_httpgetmt.csv', error_bad_lines=False)
-	csvmspeedup = pd.read_csv('curr_httppostmt.csv', error_bad_lines=False)	
+	csvloss = pd.read_csv('../dat/curr_udplatency.csv', error_bad_lines=False) 
+	csvjitter = pd.read_csv('../dat/curr_udpjitter.csv', error_bad_lines=False)
+	csvmspeeddown = pd.read_csv('../dat/curr_httpgetmt.csv', error_bad_lines=False)
+	csvmspeedup = pd.read_csv('../dat/curr_httppostmt.csv', error_bad_lines=False)	
 
 	house=int(sys.argv[1])
 
