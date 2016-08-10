@@ -16,8 +16,9 @@ toeight=[]
 tofifteen=[]
 plus=[]
 
+downs = [(csvmspeeddown[csvmspeeddown.unit_id == i]['bytes_sec']).mean() * .0000080 for i in uniquedown]
 for i in uniquedown:
-	downs = [(csvmspeeddown[csvmspeeddown.unit_id == i]['bytes_sec']).mean() * .0000080 for i in uniquedown]
+	pass
 	'''#print "avg DL of house "+str(i)+" : "+str(downspeed)
 	if downspeed < 5:
 		tofive.append(downspeed)
@@ -45,9 +46,10 @@ toeightup=[]
 tofifteenup=[]
 plusup=[]
 
+ups = [(csvmspeedup[csvmspeedup.unit_id == j]['bytes_sec']).mean() * .0000080 for j in uniqueup]
+
 for j in uniqueup:
-	upspeed = (csvmspeedup[csvmspeedup.unit_id == j]['bytes_sec']).mean() * .0000080
-	ups.append(upspeed)
+	pass	
 	'''#print "avg UL of house "+str(j)+" : "+str(upspeed)
 	if upspeed < 5:
                 tofiveup.append(upspeed)
