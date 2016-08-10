@@ -7,8 +7,8 @@ import numpy as np
 pd.set_option('max_columns', 50)
 
 
-csvmspeeddown = pd.read_csv('curr_httpgetmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
-csvmspeedup = pd.read_csv('curr_httppostmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
+csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
+csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
 uniquedown = list(set(csvmspeeddown.unit_id))
 downs=[]
 tofive=[]
