@@ -1,3 +1,7 @@
+import matplotlib
+matplotlib.use('Agg')
+import pylab as plt
+from matplotlib.ticker import FuncFormatter
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
@@ -36,8 +40,24 @@ percentplus = len(plus)/total
 print "DL info:"
 print percentfive, percenteight, percentfifteen, percentplus
 '''
-downplot = sns.barplot(x="speed range", y="percent", data=downs)
+#downplot = sns.barplot(x="speed range", y="percent", data=downs)
 
+def to_percent(y, position):
+    # Ignore the passed in position. This has the effect of scaling the default
+    # tick locations.
+    s = str(100 * y)
+
+    # The percent symbol needs escaping in latex
+    if matplotlib.rcParams['text.usetex'] is True:
+        return s + r'$\%$'
+    else:
+        return s + '%'
+
+
+plt.hist(downs, bins=5, normed=True)
+formatter = FuncFormatter(to_percent)
+plt.gca().yaxis.set_major_formatter(formatter)
+plt.show()
 
 uniqueup = list(set(csvmspeedup.unit_id))
 ups=[]
@@ -67,4 +87,4 @@ percentplusup = len(plusup)/total
 print "UL info:"
 print percentfiveup,percenteightup,percentfifteenup,percentplusup
 '''
-upplot=sns.barplot(x="speed range", y="percent", data=ups)
+#upplot=sns.barplot(x="speed range", y="percent", data=ups)
