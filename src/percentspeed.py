@@ -57,7 +57,9 @@ def to_percent(y, position):
 plt.hist(downs, bins=5, normed=True)
 formatter = FuncFormatter(to_percent)
 plt.gca().yaxis.set_major_formatter(formatter)
-plt.show()
+#plt.show()
+plt.savefig("percentDL.png")
+
 
 uniqueup = list(set(csvmspeedup.unit_id))
 ups=[]
