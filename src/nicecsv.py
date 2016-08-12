@@ -46,10 +46,10 @@ latencyfinal=pd.DataFrame(latencyavg)
 #print finalmerge
 
 
-mergetwo = pd.merge(lossfinal,jitterupfinal, on="unit_id", how="outer")
-mergethree = pd.merge(mergetwo,jitterdownfinal, on="unit_id", how="outer")
-mergefour = pd.merge(mergethree,speedupfinal, on="unit_id", how="outer")
-mergefive = pd.merge(mergefour,speeddownfinal, on="unit_id", how="outer")
-finalmerge = pd.merge(mergefive,latencyfinal, on="unit_id", how="outer")
-finalmerge.to_csv("compactInfo.csv")
+mergetwo = pd.merge(lossfinal,jitterupfinal, on='unit_id', how="inner")
+mergethree = pd.merge(mergetwo,jitterdownfinal, on='unit_id', how="inner")
+mergefour = pd.merge(mergethree,speedupfinal, on='unit_id' how="inner")
+mergefive = pd.merge(mergefour,speeddownfinal, on='unit_id', how="inner")
+finalmerge = pd.merge(mergefive,latencyfinal, on='unit_id', how="inner")
+finalmerge.to_csv("nonan.csv")
 print "added to csv"

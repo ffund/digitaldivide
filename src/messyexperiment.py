@@ -5,29 +5,55 @@
 import sys
 import pandas as pd
 import numpy as np
+#import matplotlib.pyplot as plt
 pd.set_option('max_columns', 50)
 
 if len(sys.argv)>1:
 
+	#csvloss = pd.read_csv('dat/curr_udplatency.csv', error_bad_lines=False) 
+	#csvjitter = pd.read_csv('dat/curr_udpjitter.csv', error_bad_lines=False)
+	#csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)
+	#csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)	
 	allcsv = pd.read_csv('compactInfo.csv')	
 
 	house=int(sys.argv[1])
 	
+	#loss=(csvloss[csvloss.unit_id == house][['unit_id','successes','failures']])
 	splitup = (allcsv[allcsv.unit_id == house][['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down']])
-	#convert it so it works in python histogram etc. float is python float64 is from numpy print float(splitup['Percent Loss'])
 	if splitup.empty:
 		print "The inputted house_ID is not in the database. Please try again"
 	else:
-		percentloss = float(splitup['Percent Loss'])
+		#jitter = (csvjitter[csvjitter.unit_id == house][['latency','jitter_up','jitter_down']])
+		#mspeeddown = (csvmspeeddown[csvmspeeddown.unit_id == house]['bytes_sec'])
+		#mspeedup = (csvmspeedup[csvmspeedup.unit_id == house]['bytes_sec'])
+		#totalsuccess = loss.successes.sum()
+		#totalfailure = loss.failures.sum()
+		percentloss = splitup['Percent Loss'][0]
 		
-		latency = float(splitup['Latency'])/1000.0
+		
+		#combined = pd.concat([loss, jitter, mspeeddown, mspeedup], axis=1)
 
-		jitterup = float(splitup['jitter_up'])/1000.0
-		jitterdown = float(splitup['jitter_down'])/1000.0
+		#print combined
 
-		speed = max(float(splitup['Speed_up']),float(splitup['Speed_down']))
-		downspeed = int(round(splitup['Speed_down'] * 0.008))
-		upspeed = int(round(splitup['Speed_up'] * 0.008))
+		#print "percent loss:"
+		#print percentloss
+		
+		latency = splitup['Latency'][0]/1000.0
+
+		#print "latency:"
+		#print latency
+		
+		jitterup = splitup['jitter_up'][0]/1000.0
+		jitterdown = splitup['jitter_down'][0]/1000.0
+
+		#print "jitteravg:"
+		#print jitteravg
+
+		speed = max(splitup['Speed_up'][0],splitup['Speed_down'][0])
+		downspeed = int(round(splitup['Speed_down'][0] * 0.008))
+		upspeed = int(round(splitup['Speed_up'][0] * 0.008))
+		#print "speed:"
+		#print speed
 		print "for user:"
 		print "sudo tc qdisc add dev eth1 root handle 1:0 netem delay " + str(latency/2)+"ms "+ str(jitterup) + "ms loss "+str(percentloss)+"%"
 		print "sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit limit 500000000 burst 100000"		
@@ -38,6 +64,11 @@ if len(sys.argv)>1:
 else:
 	print "Please input a house_ID"
 
+
+#I plan on passing the second argument (which will be the hous ID to sort the data
+#The information taken from the filtered dataset will then be inputted 
+#into a geni-lib function which will create the three node
+#connection with the characteristics of the specified houshold
 
 import geni.rspec.pg as PG
 import geni.rspec.egext as EGX

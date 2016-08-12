@@ -10,18 +10,20 @@ import pandas as pd
 import numpy as np
 pd.set_option('max_columns', 50)
 
-
-csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
-csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
-uniquedown = list(set(csvmspeeddown.unit_id))
+full = pd.read_csv('compactInfo.csv', error_bad_lines=False)[['unit_id','Speed_down','Speed_up']]
+#csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
+#csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)[['unit_id','bytes_sec']]
+unique = list(full.unit_id)
 downs=[]
 tofive=[]
 toeight=[]
 tofifteen=[]
 plus=[]
-
-downs = [(csvmspeeddown[csvmspeeddown.unit_id == i]['bytes_sec']).mean() * .0000080 for i in uniquedown]
-for i in uniquedown:
+#print full[full.unit_id == 6]['Speed_down'][0]
+downs = [(full[full.unit_id == i]['Speed_down']).mean() * .0000080 for i in unique]
+downs=list(downs)
+print downs
+for i in unique:
 	pass
 	'''#print "avg DL of house "+str(i)+" : "+str(downspeed)
 	if downspeed < 5:
@@ -55,23 +57,22 @@ print percentfive, percenteight, percentfifteen, percentplus
 plt.xlabel('Average DL speed of households(Mbps)')
 plt.ylabel('Frequency')
 weights = np.ones_like(downs)/len(downs)
-plt.hist(downs, bins=50, weights=weights)
+plt.hist(downs, bins=75, weights=weights)
 #formatter = FuncFormatter(to_percent)
 #plt.gca().yaxis.set_major_formatter(formatter)
 #plt.show()
 plt.savefig("percentDL.png")
 
 
-uniqueup = list(set(csvmspeedup.unit_id))
 ups=[]
 tofiveup=[]
 toeightup=[]
 tofifteenup=[]
 plusup=[]
 
-ups = [(csvmspeedup[csvmspeedup.unit_id == j]['bytes_sec']).mean() * .0000080 for j in uniqueup]
+ups = [(full[full == j]['Speed_up']).mean() * .0000080 for j in unique]
 
-for j in uniqueup:
+for j in unique:
 	pass	
 	'''#print "avg UL of house "+str(j)+" : "+str(upspeed)
 	if upspeed < 5:
@@ -91,3 +92,12 @@ print "UL info:"
 print percentfiveup,percenteightup,percentfifteenup,percentplusup
 '''
 #upplot=sns.barplot(x="speed range", y="percent", data=ups)
+plt.xlabel('Average DL speed of households(Mbps)')
+plt.ylabel('Frequency')
+weights = np.ones_like(ups)/len(ups)
+plt.hist(ups, bins=75, weights=weights)
+#formatter = FuncFormatter(to_percent)
+#plt.gca().yaxis.set_major_formatter(formatter)
+#plt.show()
+plt.savefig("percentUL.png")
+
