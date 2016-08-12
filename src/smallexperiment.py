@@ -21,7 +21,7 @@ if len(sys.argv)>1:
 		percentloss = float(splitup['Percent Loss'])
 		
 		latency = float(splitup['Latency'])/1000.0
-
+		
 		jitterup = float(splitup['jitter_up'])/1000.0
 		jitterdown = float(splitup['jitter_down'])/1000.0
 
@@ -130,7 +130,7 @@ thejfile= '''{
         }
     },
     "id": 10,
-    "name": "test"
+    "name": "house'''+str(house)+'''"
 }'''
 
 print thejfile

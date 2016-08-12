@@ -20,9 +20,8 @@ toeight=[]
 tofifteen=[]
 plus=[]
 #print full[full.unit_id == 6]['Speed_down'][0]
-downs = [(full[full.unit_id == i]['Speed_down']).mean() * .0000080 for i in unique]
-downs=list(downs)
-print downs
+downs = [float((full[full.unit_id == i]['Speed_down']) * .0000080) for i in unique]
+#print downs
 for i in unique:
 	pass
 	'''#print "avg DL of house "+str(i)+" : "+str(downspeed)
@@ -54,14 +53,16 @@ print percentfive, percenteight, percentfifteen, percentplus
 #        return s + r'$\%$'
 #    else:
 #        return s + '%'
-plt.xlabel('Average DL speed of households(Mbps)')
+'''plt.xlabel('Average DL speed of households(Mbps)')
 plt.ylabel('Frequency')
 weights = np.ones_like(downs)/len(downs)
-plt.hist(downs, bins=75, weights=weights)
+plt.hist(downs, bins=75, weights=weights)'''
+sns.distplot(downs, bins=20, kde=False)
 #formatter = FuncFormatter(to_percent)
 #plt.gca().yaxis.set_major_formatter(formatter)
 #plt.show()
-plt.savefig("percentDL.png")
+sns_plot.savefig("seaborntry.png")
+#plt.savefig("percentDL.png")
 
 
 ups=[]
@@ -70,7 +71,7 @@ toeightup=[]
 tofifteenup=[]
 plusup=[]
 
-ups = [(full[full == j]['Speed_up']).mean() * .0000080 for j in unique]
+ups = [float((full[full == j]['Speed_up']) * .0000080) for j in unique]
 
 for j in unique:
 	pass	
@@ -92,12 +93,12 @@ print "UL info:"
 print percentfiveup,percenteightup,percentfifteenup,percentplusup
 '''
 #upplot=sns.barplot(x="speed range", y="percent", data=ups)
-plt.xlabel('Average DL speed of households(Mbps)')
+'''plt.xlabel('Average DL speed of households(Mbps)')
 plt.ylabel('Frequency')
 weights = np.ones_like(ups)/len(ups)
 plt.hist(ups, bins=75, weights=weights)
 #formatter = FuncFormatter(to_percent)
 #plt.gca().yaxis.set_major_formatter(formatter)
 #plt.show()
-plt.savefig("percentUL.png")
+plt.savefig("percentUL.png")'''
 
