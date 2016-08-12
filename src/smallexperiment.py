@@ -10,25 +10,26 @@ pd.set_option('max_columns', 50)
 
 if len(sys.argv)>1:
 
-	csvloss = pd.read_csv('dat/curr_udplatency.csv', error_bad_lines=False) 
-	csvjitter = pd.read_csv('dat/curr_udpjitter.csv', error_bad_lines=False)
-	csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)
-	csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)	
+	#csvloss = pd.read_csv('dat/curr_udplatency.csv', error_bad_lines=False) 
+	#csvjitter = pd.read_csv('dat/curr_udpjitter.csv', error_bad_lines=False)
+	#csvmspeeddown = pd.read_csv('dat/curr_httpgetmt.csv', error_bad_lines=False)
+	#csvmspeedup = pd.read_csv('dat/curr_httppostmt.csv', error_bad_lines=False)	
+	allcsv = pd.read_csv('compactInfo.csv')	
 
 	house=int(sys.argv[1])
-
-	loss = (csvloss[csvloss.unit_id == house][['unit_id', 'successes','failures']])
-	if loss.empty:
+	
+	#loss=(csvloss[csvloss.unit_id == house][['unit_id','successes','failures']])
+	splitup = (allcsv[allcsv.unit_id == house][['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down']])
+	if splitup.empty:
 		print "The inputted house_ID is not in the database. Please try again"
 	else:
-		jitter = (csvjitter[csvjitter.unit_id == house][['latency','jitter_up','jitter_down']])
-		mspeeddown = (csvmspeeddown[csvmspeeddown.unit_id == house]['bytes_sec'])
-		mspeedup = (csvmspeedup[csvmspeedup.unit_id == house]['bytes_sec'])
+		#jitter = (csvjitter[csvjitter.unit_id == house][['latency','jitter_up','jitter_down']])
+		#mspeeddown = (csvmspeeddown[csvmspeeddown.unit_id == house]['bytes_sec'])
+		#mspeedup = (csvmspeedup[csvmspeedup.unit_id == house]['bytes_sec'])
+		#totalsuccess = loss.successes.sum()
+		#totalfailure = loss.failures.sum()
+		percentloss = splitup['Percent Loss'][0]
 		
-		totalsuccess = loss.successes.sum()
-		totalfailure = loss.failures.sum()
-		percentloss = (totalfailure/float(totalsuccess)) * 100.0
-
 		
 		#combined = pd.concat([loss, jitter, mspeeddown, mspeedup], axis=1)
 
@@ -37,21 +38,21 @@ if len(sys.argv)>1:
 		#print "percent loss:"
 		#print percentloss
 		
-		latency = (jitter.latency.mean())/1000.0
+		latency = splitup['Latency'][0]/1000.0
 
 		#print "latency:"
 		#print latency
 		
-		jitterup = (jitter.jitter_up.mean())/1000.0
-		jitterdown = (jitter.jitter_down.mean())/1000.0
+		jitterup = splitup['jitter_up'][0]/1000.0
+		jitterdown = splitup['jitter_down'][0]/1000.0
 
 		#print "jitteravg:"
 		#print jitteravg
 
-		speed = max(mspeeddown.mean(),mspeedup.mean())
-		downspeed = int(round(mspeeddown.mean() * 0.008))
-		upspeed = int(round(mspeedup.mean() * 0.008))
-
+		speed = max(splitup['Speed_up'][0],splitup['Speed_down'][0])
+		downspeed = int(round(splitup['Speed_down'][0] * 0.008))
+		upspeed = int(round(splitup['Speed_up'][0] * 0.008))
+		print speed
 		#print "speed:"
 		#print speed
 		print "for user:"
@@ -75,7 +76,7 @@ import geni.rspec.egext as EGX
 import geni.rspec.igext as IGX
 
 
-if loss.empty:
+if splitup.empty:
 	print "The inputted house_ID is not in the database. Please try again"
 else:
 	r = PG.Request()
@@ -85,7 +86,7 @@ else:
 	for i in range(1):
 		links.insert(i, PG.LAN('lan%d' % i))
     # Link bandwidth depends on which tier it's in
-		newspeed = int(round(speed * 0.0078125))
+		newspeed = int(round(speed * 0.008))
 		links[i].bandwidth = newspeed
 
 # The ith entry in the list, is a list of

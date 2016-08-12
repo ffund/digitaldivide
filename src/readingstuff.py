@@ -5,4 +5,4 @@ import numpy as np
 pd.set_option('max_columns', 50)
 
 csvfile = pd.read_csv('compactInfo.csv', error_bad_lines=False) 
-print len(csvfile['unit_id'])
+print csvfile
