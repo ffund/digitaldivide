@@ -42,21 +42,22 @@ print percentfive, percenteight, percentfifteen, percentplus
 '''
 #downplot = sns.barplot(x="speed range", y="percent", data=downs)
 
-def to_percent(y, position):
+#def to_percent(y, position):
     # Ignore the passed in position. This has the effect of scaling the default
     # tick locations.
-    s = str(100 * y)
+#    s = str(100 * y)
 
     # The percent symbol needs escaping in latex
-    if matplotlib.rcParams['text.usetex'] is True:
-        return s + r'$\%$'
-    else:
-        return s + '%'
-
-
-plt.hist(downs, bins=5, normed=True)
-formatter = FuncFormatter(to_percent)
-plt.gca().yaxis.set_major_formatter(formatter)
+#    if matplotlib.rcParams['text.usetex'] is True:
+#        return s + r'$\%$'
+#    else:
+#        return s + '%'
+plt.xlabel('Average DL speed of households(Mbps)')
+plt.ylabel('Frequency')
+weights = np.ones_like(downs)/len(downs)
+plt.hist(downs, bins=50, weights=weights)
+#formatter = FuncFormatter(to_percent)
+#plt.gca().yaxis.set_major_formatter(formatter)
 #plt.show()
 plt.savefig("percentDL.png")
 
