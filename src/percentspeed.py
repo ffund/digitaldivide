@@ -43,9 +43,9 @@ for i in uniqueup:
         ups.append(splitin*.0000080)
 
 
-plt.clf()#clear old plot
+plt.close()#clear old plot
 #upplot=sns.barplot(x="speed range", y="percent", data=ups)
-plt.xlabel('Average DL speed of households(Mbps)')
+plt.xlabel('Average UL speed of households(Mbps)')
 plt.ylabel('Frequency')
 weights = np.ones_like(ups)/len(ups)
 plt.hist(ups, bins=75, weights=weights)
