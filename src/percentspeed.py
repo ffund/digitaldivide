@@ -42,6 +42,8 @@ for i in uniqueup:
         splitin=full[full.unit_id == i]["Speed_up"].tolist()[0]
         ups.append(splitin*.0000080)
 
+
+plt.clf()#clear old plot
 #upplot=sns.barplot(x="speed range", y="percent", data=ups)
 plt.xlabel('Average DL speed of households(Mbps)')
 plt.ylabel('Frequency')
