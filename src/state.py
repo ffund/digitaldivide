@@ -19,7 +19,7 @@ for key in DataFrameDict.keys():
 
 print DataFrameDict['Massachusetts']['speed'].mean()
 
-speeds =  [ DataFrameDict[key]['speed'].mean() for key in DataFrameDict ]
+speeds =  [ DataFrameDict[key]['speed'].mean()*.0000080 for key in DataFrameDict ]
 #print speeds
 #print DataFrameDict.keys()
 #print DataFrameDict.keys().index("Massachusetts")
