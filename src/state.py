@@ -24,7 +24,7 @@ speeds =  [ DataFrameDict[key]['speed'].mean() for key in DataFrameDict ]
 #print DataFrameDict.keys()
 #print DataFrameDict.keys().index("Massachusetts")
 #print speeds[24]
-table = [[DataFrameDict.keys()],[speeds]]
+table = [DataFrameDict.keys(),speeds]
 df = pd.DataFrame(table)
 df = df.transpose()
 cols=["state","speed"]
