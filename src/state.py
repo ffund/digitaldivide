@@ -24,7 +24,9 @@ speeds =  [ DataFrameDict[key]['speed'].mean() for key in DataFrameDict ]
 #print DataFrameDict.keys()
 #print DataFrameDict.keys().index("Massachusetts")
 #print speeds[24]
-tablestate = [["state","speed"],[DataFrameDict.keys(),speeds]]
-headers = tablestate.pop(0)
-df = pd.DataFrame(tablestate, columns=headers)
-#df.to_csv("statespeeds.csv") #comment so it doesn't do it if ran again accidentally
+table = [[DataFrameDict.keys()],[speeds]]
+df = pd.DataFrame(table)
+df = df.transpose()
+cols=["state","speed"]
+df.columns=cols
+df.to_csv("statespeeds.csv") #comment so it doesn't do it if ran again accidentally
