@@ -11,3 +11,12 @@ csvfile = pd.read_csv('dat/unit_report.csv', error_bad_lines=False)
 #df.to_csv('nonan.csv')
 print csvfile.head()
 #print len(csvfile.unit_id)
+#uniquedown=list(csvfile.unit_id)
+#print len(uniquedown)
+#print max(list(csvfile.upload_speed))*.0000080
+#downs=[]
+#for i in uniquedown:
+#        splitup=csvfile[csvfile.unit_id == i]["speed"].tolist()[0]
+#	downs.append(splitup)
+#print max(downs)
+#print max(downs)*.0000080
