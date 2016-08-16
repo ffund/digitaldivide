@@ -12,7 +12,6 @@ pd.set_option('max_columns', 50)
 
 #allcsv = pd.read_csv('newcompact.csv')
 #URS = pd.read_csv('newURS.csv')
-#profilemba = pd.read_csv('fixedunitprofile')
 def householdPrice(houseID, allcsv, URS):
 
     us_state_abbrev = {
@@ -68,33 +67,37 @@ def householdPrice(houseID, allcsv, URS):
         'Wyoming': 'WY',
     }
 
-    inv_map = {v: k for k, v in us_state_abbrev.items()}
+    try:
+        inv_map = {v: k for k, v in us_state_abbrev.items()}
 
-    house=allcsv[allcsv.unit_id==houseID]
+        house=allcsv[allcsv.unit_id==houseID]
 
-    houseState= inv_map[house.STATE.values[0]]
-    houseISP = house.isp.values[0]
+        houseState= inv_map[house.STATE.values[0]]
+        houseISP = house.isp.values[0]
 
-    rates = URS[URS.State==houseState]
-    rates = rates[rates.isp==houseISP]
+        rates = URS[URS.State==houseState]
+        rates = rates[rates.isp==houseISP]
 
-    def distance(co1, co2):
-        return math.sqrt(math.pow(abs(co1[0] - co2[0]), 2) + math.pow(abs(co1[1] - co2[1]), 2))
+        def distance(co1, co2):
+            return math.sqrt(math.pow(abs(co1[0] - co2[0]), 2) + math.pow(abs(co1[1] - co2[1]), 2))
 
-    if rates.empty:
+        if rates.empty:
+            return float('NaN')
+
+        rateTuples = zip(map(float,rates["Download Bandwidth Mbps "].values), map(float,rates["Upload Bandwidth Mbps"].values))
+
+        housedown = float(house["SK down"].values[0])
+        houseup = float(house["SK UP"].values[0])
+        houseTuple = (housedown, houseup)
+
+        nearest = min(rateTuples, key=lambda x: distance(x, houseTuple))
+
+        r = rates[rates["Download Bandwidth Mbps "]==nearest[0]]
+        r = r[r["Upload Bandwidth Mbps"]==nearest[1]]
+        return r["Total Charge"].values[0]
+        
+    except:
         return float('NaN')
-
-    rateTuples = zip(map(float,rates["Download Bandwidth Mbps "].values), map(float,rates["Upload Bandwidth Mbps"].values))
-
-    housedown = float(house["SK down"].values[0])
-    houseup = float(house["SK UP"].values[0])
-    houseTuple = (housedown, houseup)
-
-    nearest = min(rateTuples, key=lambda x: distance(x, houseTuple))
-
-    r = rates[rates["Download Bandwidth Mbps "]==nearest[0]]
-    r = r[r["Upload Bandwidth Mbps"]==nearest[1]]
-    return r["Total Charge"].values[0]
 
 #print householdPrice(6)
 #print householdPrice(15)
