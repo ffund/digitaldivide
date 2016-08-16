@@ -1,0 +1,20 @@
+,Variable,Description
+0,Provider,Name of the residential broadband provider reporting the rate.
+1,State,State in which the Census tract is located.
+2,Weight,"The product of 1) a weight reflecting the magnitude of the service provider's presence in the Census tract, 2) the number of households in the Census tract, and 3) the inverse of the number of technologies and service plans for the given level of service. For service providers limited to 25 survey responses, this weight was increased by an amount reflecting the weights for unrequested responses."
+3,Technology,Technology used to provide the residential service.
+4,Download Bandwidth Mbps,The advertised download bandwidth for the reported service in Mbps
+5,Upload Bandwidth Mbps,The advertised upload bandwidth for the reported service in Mbps
+6,Usage Allowance GB,"The monthly usage allowance (if any) for the reported service.  If the plan has no maximum usage allowance, the field reports ""Unlimited"""
+7,Monthly Charge,The monthly charge for the service
+8,Other Mandatory Charge,Monthly mandatory charges not included elsewhere
+9,Surcharge,Monthly surcharges not included elsewhere
+10,Total Charge,"The total monthly end-user charge which is the sum of monthly charge, other mandatory charge, and surcharge"
+11,Total Charge Spread,Difference between the minimum and maximum total charge
+12,Outlier,"""Yes"" indicates that the observation was included in the regression analysis. ""No"" indicates that the observation was not included in the regression analysis."
+13,,
+14,,
+15,Notes,
+16,"1. A sample of 375 urban Census tracts was randomly selected without replacement using the ""Random Choice"" function in Mathematica from a list of 58,331 urban Census tracts encompassing the 50 states, the District of Columbia, and Puerto Rico. For each Census tract in the sample, all service providers with residential subscribers in the Census tract were requested to provide rates for all service plans in that Census tract. If a service provider offered service in more than 25 Census tracts of the sample, a subsample of 25 Cenus tracts was randomly selected for survey responses from that service provider using the ""Random Choice"" function in Mathematica.",
+17,"2. In the data file, each row represents the broadband provider's reported rates in a specific Census tract within the state for a specific level of service using a specific technology and/or service plan.  A specific level of service is defined by its download/upload bandwidth and usage allowance. ",
+18,,
