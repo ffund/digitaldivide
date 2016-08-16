@@ -9,85 +9,90 @@ import numpy as np
 
 pd.set_option('max_columns', 50)
 
+test = "hello"
 allcsv = pd.read_csv('newcompact.csv')
 URS = pd.read_csv('newURS.csv')
 
-def householdPrice(houseID, allcsv, URS)
-house=allcsv[allcsv.unit_id==589832]
-state = house.STATE.values[0]
+def householdPrice(houseID, allcsv, URS):
+    print test
 
-us_state_abbrev = {
-    'Alabama': 'AL',
-    'Alaska': 'AK',
-    'Arizona': 'AZ',
-    'Arkansas': 'AR',
-    'California': 'CA',
-    'Colorado': 'CO',
-    'Connecticut': 'CT',
-    'Delaware': 'DE',
-    'Florida': 'FL',
-    'Georgia': 'GA',
-    'Hawaii': 'HI',
-    'Idaho': 'ID',
-    'Illinois': 'IL',
-    'Indiana': 'IN',
-    'Iowa': 'IA',
-    'Kansas': 'KS',
-    'Kentucky': 'KY',
-    'Louisiana': 'LA',
-    'Maine': 'ME',
-    'Maryland': 'MD',
-    'Massachusetts': 'MA',
-    'Michigan': 'MI',
-    'Minnesota': 'MN',
-    'Mississippi': 'MS',
-    'Missouri': 'MO',
-    'Montana': 'MT',
-    'Nebraska': 'NE',
-    'Nevada': 'NV',
-    'New Hampshire': 'NH',
-    'New Jersey': 'NJ',
-    'New Mexico': 'NM',
-    'New York': 'NY',
-    'North Carolina': 'NC',
-    'North Dakota': 'ND',
-    'Ohio': 'OH',
-    'Oklahoma': 'OK',
-    'Oregon': 'OR',
-    'Pennsylvania': 'PA',
-    'Rhode Island': 'RI',
-    'South Carolina': 'SC',
-    'South Dakota': 'SD',
-    'Tennessee': 'TN',
-    'Texas': 'TX',
-    'Utah': 'UT',
-    'Vermont': 'VT',
-    'Virginia': 'VA',
-    'Washington': 'WA',
-    'West Virginia': 'WV',
-    'Wisconsin': 'WI',
-    'Wyoming': 'WY',
-}
+    us_state_abbrev = {
+        'Alabama': 'AL',
+        'Alaska': 'AK',
+        'Arizona': 'AZ',
+        'Arkansas': 'AR',
+        'California': 'CA',
+        'Colorado': 'CO',
+        'Connecticut': 'CT',
+        'Delaware': 'DE',
+        'Florida': 'FL',
+        'Georgia': 'GA',
+        'Hawaii': 'HI',
+        'Idaho': 'ID',
+        'Illinois': 'IL',
+        'Indiana': 'IN',
+        'Iowa': 'IA',
+        'Kansas': 'KS',
+        'Kentucky': 'KY',
+        'Louisiana': 'LA',
+        'Maine': 'ME',
+        'Maryland': 'MD',
+        'Massachusetts': 'MA',
+        'Michigan': 'MI',
+        'Minnesota': 'MN',
+        'Mississippi': 'MS',
+        'Missouri': 'MO',
+        'Montana': 'MT',
+        'Nebraska': 'NE',
+        'Nevada': 'NV',
+        'New Hampshire': 'NH',
+        'New Jersey': 'NJ',
+        'New Mexico': 'NM',
+        'New York': 'NY',
+        'North Carolina': 'NC',
+        'North Dakota': 'ND',
+        'Ohio': 'OH',
+        'Oklahoma': 'OK',
+        'Oregon': 'OR',
+        'Pennsylvania': 'PA',
+        'Rhode Island': 'RI',
+        'South Carolina': 'SC',
+        'South Dakota': 'SD',
+        'Tennessee': 'TN',
+        'Texas': 'TX',
+        'Utah': 'UT',
+        'Vermont': 'VT',
+        'Virginia': 'VA',
+        'Washington': 'WA',
+        'West Virginia': 'WV',
+        'Wisconsin': 'WI',
+        'Wyoming': 'WY',
+    }
 
-inv_map = {v: k for k, v in us_state_abbrev.items()}
-full_state= inv_map[state]
+    inv_map = {v: k for k, v in us_state_abbrev.items()}
 
-houseISP = house.isp.values[0]
+    house=allcsv[allcsv.unit_id==houseID]
 
-rates = URS[URS.State==full_state and URS.isp==houseISP]
-houseISP = house.isp.values[0]
+    houseState= inv_map[house.STATE.values[0]]
+    houseISP = house.isp.values[0]
+
+    rates = URS[URS.State==houseState and URS.isp==houseISP]
+    return rates
+
+print householdPrice(6)
+print householdPrice(15)
 
 
-to merge=[]
-for i in list(allcsv.unit_id):
-	tomerge.append({'unit_id':i, 'price':pricefind(i)})
-def pricefind(unit):
-	speedup=allcsv[allcsv.unit_id==unit]["SK UP"]
-	speeddown=allcsv[allcsv.unit_id==unit]["SK down"]
-	isp=allcsv[allcsv.unit_id==unit]["isp"]
-	tech=allcsv[allcsv.unit_id==unit]["TECHNOLOGY"]
-	state=allcsv[allcsv.unit_id==unit]["STATE"]
-	URS=abs(URS[URS["Download Bandwidth Mbps"])
+# to merge=[]
+# for i in list(allcsv.unit_id):
+# 	tomerge.append({'unit_id':i, 'price':pricefind(i)})
+# def pricefind(unit):
+# 	speedup=allcsv[allcsv.unit_id==unit]["SK UP"]
+# 	speeddown=allcsv[allcsv.unit_id==unit]["SK down"]
+# 	isp=allcsv[allcsv.unit_id==unit]["isp"]
+# 	tech=allcsv[allcsv.unit_id==unit]["TECHNOLOGY"]
+# 	state=allcsv[allcsv.unit_id==unit]["STATE"]
+# 	URS=abs(URS[URS["Download Bandwidth Mbps"])
 #profilemba = pd.read_csv('fixedishunitprofile.csv')
 #print URS
 '''URS = URS[URS.Technology != "Other"]
