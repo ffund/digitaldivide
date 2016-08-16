@@ -5,6 +5,14 @@
 import sys
 import pandas as pd
 import numpy as np
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("state")
+args = parser.parse_args()
+print args.echo
+
+
 pd.set_option('max_columns', 50)
 
 if len(sys.argv)>1:
