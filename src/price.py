@@ -60,5 +60,6 @@ for j in mbalist:
 #print "URS:"
 #print list(set(URS["isp"]))
 #print list(set(URS["TECHNOLOGY"]))
-pd.merge(allcsv,profilemba, on='unit_id', how='inner')
+new=pd.merge(allcsv,profilemba, on='unit_id', how='inner')
+new.to_csv('newcompact.csv')
 print 'merged'
