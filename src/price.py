@@ -6,6 +6,7 @@
 import sys
 import pandas as pd
 import numpy as np
+import math
 
 pd.set_option('max_columns', 50)
 
@@ -77,9 +78,24 @@ def householdPrice(houseID, allcsv, URS):
     print houseISP
     rates = URS[URS.State==houseState]
     rates = rates[rates.isp==houseISP]
+
+    def distance(co1, co2):
+        return math.sqrt(math.pow(abs(co1[0] - co2[0]), 2) + math.pow(abs(co1[1] - co2[1]), 2))
+
     if rates.empty:
         return float('NaN')
-    return rates
+
+    rateTuples = zip(map(float,rates["Download Bandwidth Mbps "].values), map(float,rates["Upload Bandwidth Mbps"].values))
+
+    housedown = float(house["SK down"].values[0])
+    houseup = float(house["SK UP"].values[0])
+    houseTuple = (housedown, houseup)
+    
+    nearest = min(rateTuples, key=lambda x: distance(x, houseTuple))
+
+    r = rates[rates["Download Bandwidth Mbps "]==nearest[0]]
+    r = r[r["Upload Bandwidth Mbps"]==nearest[1]]
+    return r["Total Charge"].values[0]
 
 #print householdPrice(6)
 #print householdPrice(15)
