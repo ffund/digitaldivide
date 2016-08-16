@@ -1,10 +1,15 @@
+
 import sys
 import pandas as pd
 import numpy as np
+import math
 
-#statestuff = pd.read_csv("dat/unit_report.csv",error_bad_lines=False)
-profile = pd.read_excel("dat/fixedunitprofile.csv",error_bad_lines=False)
-URS = pd.read_excel("dat/URS.csv")
-fullcsv = pd.read_csv("dat/compactInfo.csv")
+pd.set_option('max_columns', 50)
 
-print list(set(profile[profile.isp]))
+allcsv = pd.read_csv('newcompact.csv')
+#URS = pd.read_csv('newURS.csv')
+profilemba = pd.read_csv('fixedunitprofile.csv')
+
+new=pd.merge(allcsv,profilemba, on='unit_id', how='inner')
+new.to_csv('workingcompact.csv')
+print 'merged'
