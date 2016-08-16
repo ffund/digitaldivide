@@ -77,7 +77,7 @@ def householdPrice(houseID, allcsv, URS):
     print houseISP
     rates = URS[URS.State==houseState]
     rates = rates[rates.isp==houseISP]
-    if rates.empty
+    if rates.empty:
         return float('NaN')
     return rates
 
