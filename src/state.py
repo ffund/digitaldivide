@@ -7,20 +7,20 @@ import pandas as pd
 import numpy as np
 
 #statestuff = pd.read_csv("dat/unit_report.csv",error_bad_lines=False)
-#profile = pd.read_excel("dat/unitprofile.xls")
-#URS = pd.read_excel("dat/URS.xlsx")
-#fullcsv = pd.read_csv("dat/compactInfo.csv")
+profile = pd.read_excel("dat/unitprofile.xls")
+#URS = pd.read_excel("dat/onlyDataMBA.xlsx")
+fullcsv = pd.read_csv("dat/compactInfo.csv")
 #print profile.head()
 #print URS.head()
-#profile = profile[profile.STATE !="UNKNOWN"]
-#profile = profile[profile["SK UP"] !="MISC"]
-#profile = profile[profile["SK UP"] !="REMOVE"]
-#profile = profile[profile["TECHNOLOGY"] != "REMOVE"]
+profile = profile[profile.STATE !="UNKNOWN"]
+profile = profile[profile["SK UP"] !="MISC"]
+profile = profile[profile["SK UP"] !="REMOVE"]
+profile = profile[profile["TECHNOLOGY"] != "REMOVE"]
 #print type(profile[profile.unit_id==901]["SK UP"].tolist()[0])
-
-
-#print profile.head()
-#profile.to_csv("fixedunitprofile.csv")
+#profile = profile[profile["SK UP"].tolist()[0].str.contains("[")==False]
+#profile = str(profile["SK UP"].tolist()[0]).contains("[")==False
+#print profile
+profile.to_csv("fixedishunitprofile.csv")
 #URS.to_csv("URS.csv")
 #print "profile:"
 #print list(set(profile["isp"]))
