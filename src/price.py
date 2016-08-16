@@ -9,12 +9,10 @@ import numpy as np
 
 pd.set_option('max_columns', 50)
 
-test = "hello"
-allcsv = pd.read_csv('newcompact.csv')
-URS = pd.read_csv('newURS.csv')
+#allcsv = pd.read_csv('newcompact.csv')
+#URS = pd.read_csv('newURS.csv')
 
 def householdPrice(houseID, allcsv, URS):
-    print test
 
     us_state_abbrev = {
         'Alabama': 'AL',
@@ -79,8 +77,8 @@ def householdPrice(houseID, allcsv, URS):
     rates = URS[URS.State==houseState and URS.isp==houseISP]
     return rates
 
-print householdPrice(6, allcsv, URS)
-print householdPrice(15, allcsv, URS)
+#print householdPrice(6)
+#print householdPrice(15)
 
 
 # to merge=[]
