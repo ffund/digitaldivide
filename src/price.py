@@ -79,8 +79,8 @@ def householdPrice(houseID, allcsv, URS):
     rates = URS[URS.State==houseState and URS.isp==houseISP]
     return rates
 
-print householdPrice(6)
-print householdPrice(15)
+print householdPrice(6, allcsv, URS)
+print householdPrice(15, allcsv, URS)
 
 
 # to merge=[]
