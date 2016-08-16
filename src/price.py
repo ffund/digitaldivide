@@ -74,8 +74,7 @@ def householdPrice(houseID, allcsv, URS):
 
     houseState= inv_map[house.STATE.values[0]]
     houseISP = house.isp.values[0]
-    print houseState
-    print houseISP
+
     rates = URS[URS.State==houseState]
     rates = rates[rates.isp==houseISP]
 
@@ -90,7 +89,7 @@ def householdPrice(houseID, allcsv, URS):
     housedown = float(house["SK down"].values[0])
     houseup = float(house["SK UP"].values[0])
     houseTuple = (housedown, houseup)
-    
+
     nearest = min(rateTuples, key=lambda x: distance(x, houseTuple))
 
     r = rates[rates["Download Bandwidth Mbps "]==nearest[0]]
