@@ -79,7 +79,7 @@ def householdPrice(houseID, allcsv, URS):
         rates = rates[rates.isp==houseISP]
 
         if rates.empty:
-            rates = rates[rates.isp==houseISP]
+            rates = URS[URS.isp==houseISP]
 
 
         def distance(co1, co2):
