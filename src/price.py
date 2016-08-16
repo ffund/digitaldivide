@@ -13,7 +13,7 @@ pd.set_option('max_columns', 50)
 #allcsv = pd.read_csv('newcompact.csv')
 #URS = pd.read_csv('newURS.csv')
 
-def householdPrice(houseID, allcsv, URS):
+'''def householdPrice(houseID, allcsv, URS):
 
     us_state_abbrev = {
         'Alabama': 'AL',
@@ -94,7 +94,7 @@ def householdPrice(houseID, allcsv, URS):
 
     r = rates[rates["Download Bandwidth Mbps "]==nearest[0]]
     r = r[r["Upload Bandwidth Mbps"]==nearest[1]]
-    return r["Total Charge"].values[0]
+    return r["Total Charge"].values[0]'''
 
 #print householdPrice(6)
 #print householdPrice(15)
@@ -161,6 +161,6 @@ for j in mbalist:
 #print "URS:"
 #print list(set(URS["isp"]))
 #print list(set(URS["TECHNOLOGY"]))
-#new=pd.merge(allcsv,profilemba, on='unit_id', how='inner')
-#new.to_csv('newcompact.csv')
-#print 'merged'
+new=pd.merge(allcsv,profilemba, on='unit_id', how='inner')
+new.to_csv('workingcompact.csv')
+print 'merged'
