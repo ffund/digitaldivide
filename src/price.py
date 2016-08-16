@@ -2,19 +2,98 @@
 #6   15   83   360   362   365   368   380   382   385   386   390   404   405   409
 
 
+
 import sys
 import pandas as pd
 import numpy as np
+
 pd.set_option('max_columns', 50)
 
-allcsv = pd.read_csv('compactInfo.csv')
-URS = pd.read_csv('URS.csv')
-profilemba = pd.read_csv('fixedishunitprofile.csv')
+allcsv = pd.read_csv('newcompact.csv')
+URS = pd.read_csv('newURS.csv')
+
+def householdPrice(houseID, allcsv, URS)
+house=allcsv[allcsv.unit_id==589832]
+state = house.STATE.values[0]
+
+us_state_abbrev = {
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
+    'New Hampshire': 'NH',
+    'New Jersey': 'NJ',
+    'New Mexico': 'NM',
+    'New York': 'NY',
+    'North Carolina': 'NC',
+    'North Dakota': 'ND',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
+    'Rhode Island': 'RI',
+    'South Carolina': 'SC',
+    'South Dakota': 'SD',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
+    'West Virginia': 'WV',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY',
+}
+
+inv_map = {v: k for k, v in us_state_abbrev.items()}
+full_state= inv_map[state]
+
+houseISP = house.isp.values[0]
+
+rates = URS[URS.State==full_state and URS.isp==houseISP]
+houseISP = house.isp.values[0]
+
+
+to merge=[]
+for i in list(allcsv.unit_id):
+	tomerge.append({'unit_id':i, 'price':pricefind(i)})
+def pricefind(unit):
+	speedup=allcsv[allcsv.unit_id==unit]["SK UP"]
+	speeddown=allcsv[allcsv.unit_id==unit]["SK down"]
+	isp=allcsv[allcsv.unit_id==unit]["isp"]
+	tech=allcsv[allcsv.unit_id==unit]["TECHNOLOGY"]
+	state=allcsv[allcsv.unit_id==unit]["STATE"]
+	URS=abs(URS[URS["Download Bandwidth Mbps"])
+#profilemba = pd.read_csv('fixedishunitprofile.csv')
 #print URS
-URS = URS[URS.Technology != "Other"]
+'''URS = URS[URS.Technology != "Other"]
 URS = URS.rename(columns={'Provider': 'isp', 'Technology': 'TECHNOLOGY'})
-#URS=URS.replace("Provider","isp")
-#URS=URS.replace("Technology","TECHNOLOGY")
+URS=URS.replace("Provider","isp")
+URS=URS.replace("Technology","TECHNOLOGY")
 URS=URS.replace("AT&T Services, Inc.", "AT&T")
 URS=URS.replace("Charter Communications, Inc.","Charter")
 URS=URS.replace("Charter Communications","Charter")
@@ -28,7 +107,7 @@ URS=URS.replace('Verizon Florida LLC','Verizon')
 URS=URS.replace('Verizon Pennsylvania Inc.','Verizon')
 URS=URS.replace('Verizon New York Inc.','Verizon')
 URS=URS.replace('Verizon Virginia Inc.','Verizon')
-profilemba=profilemba.replace('Verizon DSL','Verizon')
+#profilemba=profilemba.replace('Verizon DSL','Verizon')
 URS=URS.replace('Frontier Communications Corporation','Frontier')
 URS=URS.replace('Cox Communications, Inc','Cox')
 URS=URS.replace('Time Warner Cable Enterprises LLC','Time Warner Cable')
@@ -47,7 +126,7 @@ for i in URSlist:
 	URS=URS[URS.isp != i]
 mbalist = ['Wildblue/ViaSat', 'Brighthouse', 'Hughes', 'Insight',  'Qwest']
 for j in mbalist:
-	profilemba=profilemba[profilemba.isp != j]
+	profilemba=profilemba[profilemba.isp != j]'''
 #"FTTH"="FIBER"
 #"Fixed wireless"="SATELLITE"
 #"Cable"="CABLE"
@@ -60,6 +139,6 @@ for j in mbalist:
 #print "URS:"
 #print list(set(URS["isp"]))
 #print list(set(URS["TECHNOLOGY"]))
-new=pd.merge(allcsv,profilemba, on='unit_id', how='inner')
-new.to_csv('newcompact.csv')
-print 'merged'
+#new=pd.merge(allcsv,profilemba, on='unit_id', how='inner')
+#new.to_csv('newcompact.csv')
+#print 'merged'
