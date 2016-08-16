@@ -73,7 +73,8 @@ def householdPrice(houseID, allcsv, URS):
 
     houseState= inv_map[house.STATE.values[0]]
     houseISP = house.isp.values[0]
-
+    print houseState
+    print houseISP
     rates = URS[URS.State==houseState and URS.isp==houseISP]
     return rates
 
