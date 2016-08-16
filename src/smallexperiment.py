@@ -8,10 +8,10 @@ import numpy as np
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("state", help="Specify a state from which to draw a sample household.")
+parser.add_argument("--state", help="Specify a state from which to draw a sample household.")
 args = parser.parse_args()
-print args.echo
-
+if args.state:
+    print "I specified a state: %s" % args.state
 
 pd.set_option('max_columns', 50)
 
