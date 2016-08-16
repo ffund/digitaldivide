@@ -8,7 +8,7 @@ import numpy as np
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("state")
+parser.add_argument("state", help="Specify a state from which to draw a sample household.")
 args = parser.parse_args()
 print args.echo
 
