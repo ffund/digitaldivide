@@ -9,17 +9,19 @@ import numpy as np
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--state", help="Specify a state from which to draw a sample household.")
+parser.add_argument("--houseid", help="Specify a household ID from the Measuring Broadband America data set.")
+
 args = parser.parse_args()
 if args.state:
     print "I specified a state: %s" % args.state
 
 pd.set_option('max_columns', 50)
 
-if len(sys.argv)>1:
+if args.houseid:
 
 	allcsv = pd.read_csv('compactInfo.csv')	
 
-	house=int(sys.argv[1])
+	house=int(args.houseid)
 	
 	splitup = (allcsv[allcsv.unit_id == house][['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down']])
 	#convert it so it works in python histogram etc. float is python float64 is from numpy print float(splitup['Percent Loss'])
