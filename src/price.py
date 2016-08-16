@@ -78,6 +78,10 @@ def householdPrice(houseID, allcsv, URS):
         rates = URS[URS.State==houseState]
         rates = rates[rates.isp==houseISP]
 
+        if rates.empty:
+            rates = rates[rates.isp==houseISP]
+
+
         def distance(co1, co2):
             return math.sqrt(math.pow(abs(co1[0] - co2[0]), 2) + math.pow(abs(co1[1] - co2[1]), 2))
 
@@ -95,7 +99,7 @@ def householdPrice(houseID, allcsv, URS):
         r = rates[rates["Download Bandwidth Mbps "]==nearest[0]]
         r = r[r["Upload Bandwidth Mbps"]==nearest[1]]
         return r["Total Charge"].values[0]
-        
+
     except:
         return float('NaN')
 
