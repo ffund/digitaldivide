@@ -23,4 +23,3 @@ df = df.transpose()
 cols=["state","number of households tested"]
 df.columns=cols
 df.to_csv("statenumbers.csv") #comment so it doesn't do it if ran again accidentally
-

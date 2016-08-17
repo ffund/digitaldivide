@@ -6,7 +6,7 @@ import math
 
 pd.set_option('max_columns', 50)
 
-allcsv = pd.read_csv('newcompact.csv')
+allcsv = pd.read_csv('compactInfo.csv')
 #URS = pd.read_csv('newURS.csv')
 profilemba = pd.read_csv('fixedunitprofile.csv')
 
