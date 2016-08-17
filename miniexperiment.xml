@@ -19,7 +19,7 @@
     <interface_ref client_id="Tier1-0:if0"/>
     <interface_ref client_id="Tier1-1:if1"/>
     <link_type name="lan"/>
-    <property source_id="Tier1-0:if0" dest_id="lan0" capacity="29353"/>
-    <property source_id="Tier1-1:if1" dest_id="lan0" capacity="29353"/>
+    <property source_id="Tier1-0:if0" dest_id="lan0" capacity="27784"/>
+    <property source_id="Tier1-1:if1" dest_id="lan0" capacity="27784"/>
   </link>
 </rspec>

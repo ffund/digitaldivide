@@ -8,18 +8,17 @@ import numpy as np
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--state", help="Specify a state from which to draw a sample household.")
+parser.add_argument("--state", help="Specify a state from which to draw a sample household. (two letters)")
 parser.add_argument("--houseid", help="Specify a household ID from the Measuring Broadband America data set.")
-
+parser.add_argument("--price_range", help="A number, followed by a '-', followed by a number greater than the first (number is amount in dollars). Only whole numbers please.")
+parser.add_argument("--Technology", help="CABLE, FIBER, or DSL.")
 args = parser.parse_args()
-if args.state:
-    print "I specified a state: %s" % args.state
+#if args.state:
+#    print "I specified a state: %s" % args.state
 
-pd.set_option('max_columns', 50)
+allcsv = pd.read_csv('full.csv')
 
 if args.houseid:
-
-	allcsv = pd.read_csv('compactInfo.csv')	
 
 	house=int(args.houseid)
 	
@@ -45,54 +44,50 @@ if args.houseid:
 		print "sudo tc qdisc add dev eth1 root netem delay " + str(latency/2)+"ms "+ str(jitterdown) + "ms loss "+str(percentloss)+"%"
 		print "sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(downspeed)+"kbit limit 500000000 burst 100000"
 
-else:
-	print "Please input a house_ID"
 
+	import geni.rspec.pg as PG
+	import geni.rspec.egext as EGX
+	import geni.rspec.igext as IGX
 
-import geni.rspec.pg as PG
-import geni.rspec.egext as EGX
-import geni.rspec.igext as IGX
+	if splitup.empty:
+		print "The inputted house_ID is not in the database. Please try again"
+	else:
+		r = PG.Request()
 
+		links = []
 
-if splitup.empty:
-	print "The inputted house_ID is not in the database. Please try again"
-else:
-	r = PG.Request()
-
-	links = []
-
-	for i in range(1):
-		links.insert(i, PG.LAN('lan%d' % i))
+		for i in range(1):
+			links.insert(i, PG.LAN('lan%d' % i))
     # Link bandwidth depends on which tier it's in
-		newspeed = int(round(speed * 0.008))
-		links[i].bandwidth = newspeed
+			newspeed = int(round(speed * 0.008))
+			links[i].bandwidth = newspeed
 
 # The ith entry in the list, is a list of
 # all the links that the ith VM is connected to
-	con = [[0],[0]]
+		con = [[0],[0]]
 
-	ifaceCounter = 0
-	vms = []
-	for i in range(2):
+		ifaceCounter = 0
+		vms = []
+		for i in range(2):
         #will name it Tier1-0, Tier1-1, etc
-		igvm = IGX.XenVM("Tier1-%d" % i)
-		vms.insert(i, igvm)
+			igvm = IGX.XenVM("Tier1-%d" % i)
+			vms.insert(i, igvm)
     # Generate interfaces and connections for this VM
-		for j in range(len(con[i])):
-        		linkno = con[i][j]
-        		iface = igvm.addInterface("if%d" % ifaceCounter)
-        		ifaceCounter += 1
-        		iface.addAddress(PG.IPv4Address("10.1.%d.%d" % (linkno, i+1), "255.255.255.0"))
-        		links[linkno].addInterface(iface)
-		r.addResource(igvm)
+			for j in range(len(con[i])):
+        			linkno = con[i][j]
+        			iface = igvm.addInterface("if%d" % ifaceCounter)
+        			ifaceCounter += 1
+        			iface.addAddress(PG.IPv4Address("10.1.%d.%d" % (linkno, i+1), "255.255.255.0"))
+        			links[linkno].addInterface(iface)
+			r.addResource(igvm)
 
-	for i in range(len(links)):
-		r.addResource(links[i])
+		for i in range(len(links)):
+			r.addResource(links[i])
 
-	r.writeXML("miniexperiment.xml")
-	print "Rspec written to file"
+		r.writeXML("miniexperiment.xml")
+		print "Rspec written to file"
 
-thejfile= '''{
+	thejfile= '''{
     "content": {
         "down": {
             "corruption": {
@@ -143,7 +138,15 @@ thejfile= '''{
     "name": "house'''+str(house)+'''"
 }'''
 
-print thejfile
+	print thejfile
 
-
-
+else:
+	if args.state:
+		allcsv=allcsv[allcsv.STATE==args.state]
+	if args.price_range:
+		allcsv=allcsv[allcsv.price >= int(args.price_range.split("-")[0])]
+		allcsv=allcsv[allcsv.price <= int(args.price_range.split("-")[1])]
+	if args.Technology:
+		allcsv=allcsv[allcsv.TECHNOLOGY == args.Technology]
+	print list(allcsv.unit_id)	
+	print len(list(allcsv.unit_id))
