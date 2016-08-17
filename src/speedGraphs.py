@@ -31,7 +31,7 @@ plt.hist(downs, bins=50, weights=weights)
 #sns.distplot(downs, bins=20, kde=False)
 plt.show()
 #sns_plot.savefig("seaborntry.png")
-plt.savefig("percentDL.png")
+plt.savefig("percentDL.svg")
 
 
 uniqueup=list(full.unit_id)#csvmspeedup.unit_id))
@@ -51,5 +51,5 @@ weights = np.ones_like(ups)/len(ups)
 plt.hist(ups, bins=50, weights=weights)
 #plt.gca().yaxis.set_major_formatter(formatter)
 #plt.show()
-plt.savefig("percentUL.png")
+plt.savefig("percentUL.svg")
 print "added"
