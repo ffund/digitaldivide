@@ -9,9 +9,14 @@
  
  Our goal was to create more realistic networks on GENI. With more realistic networks to test on, researchers should be able to make advancements that have a better impact on more Americans' internet. Our tool takes an input of state, price range, and technology so researchers can limit their outputs to households that represent the target of their development. Then, our tool looks through a dataset, and randomly selects one household that matches all the given parameters.
 
-The dataset comes from measurements in the Measuring Broadband America program. Measuring Broadband America uses volunteer panelists paying different prices for different speeds, and from different locations.  
+The dataset comes from measurements in the Measuring Broadband America program. Measuring Broadband America uses volunteer panelists paying different prices for different speeds, and from different locations.
+
+Once an actual household is selected from the dataset, the informatoin can be used in two ways. Our code generates a script that can be put into GENI to create a small network, with one machine representing the user, and the other representing the server. The link between the user and the server has the same qualities as the selected household. So, if we run the script searching for a New York household using Fios, as was done here, we could get different characteristics each time. The idea is that if it is tested on multiple similar households, researchers will get a better idea whether or not their application works under different circumstances.
+
+Our tool also generates a profile where a researcher can connect to after setting up a VPN and a proxy server. The link between the VPN and the proxy also has the same characteristics as the sample household. Then, researchers can browse the internet using that households speeds, latency, and other features. Since, researchers only have control over one link, this method includes outside influences on the network that GENI does not have. The GENI network is completely controlled by whoever created that network. Facebook instituted a program called "2G Tuesday" where employees have the option of using worse internet speeds for one hour one Tuesday in order to get a better understanding of how worse internet speeds run their applications [2]. This experiment actually had a big impact on the Facebook team, and they have said that the experiment led them to change some parts of the Messenger app. We hope that our tool will allow researchers to have a better understanding about how their applications work under various conditions, and hopefully this will lead to bigger and better developements for everybody.
  
 
 
 ## Citations
 [1] [https://isis.poly.edu/~jcappos/papers/muhammad_seattle_geni_12.pdf](https://isis.poly.edu/~jcappos/papers/muhammad_seattle_geni_12.pdf)
+[2] [https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/)
