@@ -38,7 +38,106 @@ We hope that the GENI network and the internet profile our tool generates will h
  
 
 ## Run my experiment
+
 Download "full.csv" from my repository
+
+Download "finalexperiment.py" from src/ and put it in a subdirectory to full.csv (one level lower than full.csv)
+
+Next, follow instructions [here](https://www.continuum.io/downloads), to download Anaconda
+
+Follow [this tutorial](https://witestlab.poly.edu/respond/sites/genitutorial/module/introduction-testbeds) to learn how to use GENI
+
+Install [geni-lib](https://geni-lib.readthedocs.io/en/latest/intro/install.html)
+ 
+Run the script from the directory with full.csv in it: python finalexperiment.py
+
+If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, or DSL)
+
+The output should look something like this: 
+<pre>
+for user:
+sudo tc qdisc add dev eth1 root handle 1:0 netem delay 9.2172741821ms 3.00476386913ms loss 0.0286073654638%
+sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate 1058kbit limit 500000000 burst 100000
+for server:
+sudo tc qdisc add dev eth1 root netem delay 9.2172741821ms 2.43315504979ms loss 0.0286073654638%
+sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate 15778kbit limit 500000000 burst 100000
+Rspec written to file
+{
+    "content": {
+        "down": {
+            "corruption": {
+                "correlation": 0,
+                "percentage": 0
+            },
+            "delay": {
+                "correlation": 0,
+                "delay":"9.2172741821",
+                "jitter":"2.43315504979"
+            },
+            "iptables_options": [],
+            "loss": {
+                "correlation": 0,
+                "percentage":"0.0286073654638"
+            },
+            "rate":"15778",
+            "reorder": {
+                "correlation": 0,
+                "gap": 0,
+                "percentage": 0
+            }
+        },
+        "up": {
+            "corruption": {
+                "correlation": 0,
+                "percentage": 0
+            },
+            "delay": {
+                "correlation": 0,
+                "delay":"9.2172741821",
+                "jitter":"3.00476386913"
+            },
+            "iptables_options": [],
+            "loss": {
+                "correlation": 0,
+                "percentage":"0.0286073654638"
+            },
+            "rate":"1058",
+            "reorder": {
+                "correlation": 0,
+                "gap": 0,
+                "percentage": 0
+            }
+        }
+    },
+    "id": 10,
+    "name": "house8334"
+}
+</pre>
+
+Now, log into GENI and create a new slice
+
+Next you want to copy the contents of miniexperiment.xml and place it in the textbox on the GENI interface. A two node topology should pop up.
+
+Log into both the nodes using ssh.
+
+Run the two commands under "user" on the node titled user and the two commands under "server" on the node titled server.
+
+Those nodes are then set up and ready with the correct characteristics.
+
+Follow instructions [here](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/) to set up the ATC web browsing part of the experiment.
+
+
+Once finished with that: cd ~/augmented-traffic-control/utils/profiles on an openvpn node
+
+Add a new file titled (anything).json and copy the contents under "Rspec written to file" and ending with "}" to the new file in profiles.
+
+cd .. and then run bash restore-profiles.sh localhost:8000 
+
+Refresh http://10.8.0.1:8000, and you should see your new profile
+
+Select that profile, and surf the web on the proxied tab. You are now using an internet connection modelled by the sampled household!
+
+Thank you for participating!
 
 ## Citations
 
