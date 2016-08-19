@@ -39,7 +39,7 @@ if args.houseid:
 		upspeed = int(round(splitup['Speed_up'] * 0.008))
 		print "for user:"
 		print "sudo tc qdisc add dev eth1 root handle 1:0 netem delay " + str(latency/2)+"ms "+ str(jitterup) + "ms loss "+str(percentloss)+"%"
-		print "sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit limit 500000000 burst 100000"		
+		print "sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit limit 500000000 burst 100000"		
 		print "for server:"
 		print "sudo tc qdisc add dev eth1 root netem delay " + str(latency/2)+"ms "+ str(jitterdown) + "ms loss "+str(percentloss)+"%"
 		print "sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(downspeed)+"kbit limit 500000000 burst 100000"
@@ -96,15 +96,15 @@ if args.houseid:
             },
             "delay": {
                 "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterdown)+'''"
+                "delay":"'''+str(int(round(latency/2)))+'''",
+                "jitter":"'''+str(int(round(jitterdown)))+'''"
             },
             "iptables_options": [],
             "loss": {
                 "correlation": 0,
                 "percentage":"'''+str(percentloss)+'''"
             },
-            "rate":"'''+str(downspeed)+'''",
+            "rate":"'''+str(int(round(downspeed)))+'''",
             "reorder": {
                 "correlation": 0,
                 "gap": 0,
@@ -118,15 +118,15 @@ if args.houseid:
             },
             "delay": {
                 "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterup)+'''"
+                "delay":"'''+str(int(round(latency/2)))+'''",
+                "jitter":"'''+str(int(round(jitterup)))+'''"
             },
             "iptables_options": [],
             "loss": {
                 "correlation": 0,
                 "percentage":"'''+str(percentloss)+'''"
             },
-            "rate":"'''+str(upspeed)+'''",
+            "rate":"'''+str(int(round(upspeed)))+'''",
             "reorder": {
                 "correlation": 0,
                 "gap": 0,
@@ -226,15 +226,15 @@ else:
             },
             "delay": {
                 "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterdown)+'''"
+                "delay":"'''+str(int(round(latency/2)))+'''",
+                "jitter":"'''+str(int(round(jitterdown)))+'''"
             },
             "iptables_options": [],
             "loss": {
                 "correlation": 0,
                 "percentage":"'''+str(percentloss)+'''"
             },
-            "rate":"'''+str(downspeed)+'''",
+            "rate":"'''+str(int(round(downspeed)))+'''",
             "reorder": {
                 "correlation": 0,
                 "gap": 0,
@@ -248,15 +248,15 @@ else:
             },
             "delay": {
                 "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterup)+'''"
+                "delay":"'''+str(int(round(latency/2)))+'''",
+                "jitter":"'''+str(int(round(jitterup)))+'''"
             },
             "iptables_options": [],
             "loss": {
                 "correlation": 0,
                 "percentage":"'''+str(percentloss)+'''"
             },
-            "rate":"'''+str(upspeed)+'''",
+            "rate":"'''+str(int(round(upspeed)))+'''",
             "reorder": {
                 "correlation": 0,
                 "gap": 0,
