@@ -114,6 +114,8 @@ Rspec written to file
 }
 </pre>
 
+#Use GENI to model the specified household's netowork characteristics
+
 Now, log into GENI and create a new slice
 
 Next you want to copy the contents of miniexperiment.xml and place it in the textbox on the GENI interface. A two node topology should pop up.
@@ -124,14 +126,19 @@ Run the two commands under "user" on the node titled user and the two commands u
 
 Those nodes are then set up and ready with the correct characteristics.
 
+#Using ATC to model the specified household's netowork characteristics
+
 Follow instructions [here](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/) to set up the ATC web browsing part of the experiment.
 
+Test that you have everything set up correctly by browsing under the provided profiles to check that the internet is being shaped
 
 Once finished with that: cd ~/augmented-traffic-control/utils/profiles on an openvpn node
 
 Add a new file titled (anything).json and copy the contents under "Rspec written to file" and ending with "}" to the new file in profiles.
 
-cd .. and then run bash restore-profiles.sh localhost:8000 
+run: cd .. 
+
+and then run: bash restore-profiles.sh localhost:8000 
 
 Refresh http://10.8.0.1:8000, and you should see your new profile
 
