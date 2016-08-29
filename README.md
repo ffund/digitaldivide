@@ -114,7 +114,7 @@ Rspec written to file
 }
 </pre>
 
-#Use GENI to model the specified household's netowork characteristics
+###Use GENI to model the specified household's netowork characteristics
 
 Now, log into GENI and create a new slice
 
@@ -126,7 +126,7 @@ Run the two commands under "user" on the node titled user and the two commands u
 
 Those nodes are then set up and ready with the correct characteristics.
 
-#Using ATC to model the specified household's netowork characteristics
+###Using ATC to model the specified household's netowork characteristics
 
 Follow instructions [here](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/) to set up the ATC web browsing part of the experiment.
 
