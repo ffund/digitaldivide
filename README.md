@@ -41,17 +41,37 @@ We hope that the GENI network and the internet profile our tool generates will h
 
 ## Run my experiment
 
-Download "full.csv" from my repository
+All of the materials needed are in the [CodeRealisticTestbeds](https://github.com/csmithsalzberg/CodeRealisticTestbeds) repository on GitHub.
 
-Download "finalexperiment.py" from src/ and put it in a subdirectory to full.csv (one level lower than full.csv)
+To run our Python script, you will need some prerequisite libraries:
 
-Next, follow instructions [here](https://www.continuum.io/downloads), to download Anaconda
+* [geni-lib](https://geni-lib.readthedocs.io/en/latest/)
+* [pandas](http://pandas.pydata.org/)
 
-Follow [this tutorial](https://witestlab.poly.edu/respond/sites/genitutorial/module/introduction-testbeds) to learn how to use GENI
+On Ubuntu 14.04, you can download and install the prerequisite software by running the [install.sh](https://github.com/csmithsalzberg/CodeRealisticTestbeds/blob/master/install.sh) script in our repository:
 
-Install [geni-lib](https://geni-lib.readthedocs.io/en/latest/intro/install.html)
- 
-Run the script from the directory with full.csv in it: python finalexperiment.py
+```
+wget https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/install.sh
+bash install.sh
+```
+(You can reserve a single VM with Ubuntu 14.04 on an InstaGENI aggregate for purposes of running this experiment, and set it up with that script.) Alternatively, if you prefer to run it on your own computer, you can install the prerequisites on other platforms:
+
+* [geni-lib installation](https://geni-lib.readthedocs.io/en/latest/intro/install.html)
+* [pandas installation](http://pandas.pydata.org/pandas-docs/stable/install.html). The easiest way to get `pandas` may be to use [anaconda](https://docs.continuum.io/anaconda/).
+
+
+Once you have installed the prerequisites, you should clone our repository, and navigate to its root directory:
+
+```
+git clone https://github.com/csmithsalzberg/CodeRealisticTestbeds
+cd CodeRealisticTestbeds
+```
+
+Then, run our script with
+
+```
+python src/finalexperiment.py
+```
 
 If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, or DSL)
 
@@ -116,7 +136,7 @@ Rspec written to file
 }
 </pre>
 
-###Use GENI to model the specified household's netowork characteristics
+### Use GENI to model the specified household's netowork characteristics
 
 Now, log into GENI and create a new slice
 
@@ -148,7 +168,7 @@ Select that profile, and surf the web on the proxied tab. You are now using an i
 
 Thank you for participating!
 
-## Citations
+## References
 
 [1] "2015 Measuring Broadband America Fixed Report." Federal Communications Commission. 2015. [https://www.fcc.gov/reports-research/reports/measuring-broadband-america/measuring-broadband-america-2015](https://www.fcc.gov/reports-research/reports/measuring-broadband-america/measuring-broadband-america-2015)
 
