@@ -1,272 +1,204 @@
-#Some house_ids with data:
-#6   15   83   360   362   365   368   380   382   385   386   390   404   405   409 
 
 import random
 import sys
 import pandas as pd
 import numpy as np
 import os
+import json
+
+# Importing geni-lib
+import geni.rspec.pg as PG
+import geni.rspec.egext as EGX
+import geni.rspec.igext as IGX
+
+# Setting command line args
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--state", help="Specify a state from which to draw a sample household. (two letters)")
+parser.add_argument("--state", help="Specify a state from which to draw a sample household. (two letter state code)")
 parser.add_argument("--houseid", help="Specify a household ID from the Measuring Broadband America data set.")
-parser.add_argument("--price_range", help="A number, followed by a '-', followed by a number greater than the first (number is amount in dollars). Only whole numbers please.")
-parser.add_argument("--Technology", help="CABLE, FIBER, or DSL.")
+parser.add_argument("--price-range", help="A number, followed by a '-', followed by a number greater than the first (number is amount in dollars). Only integer values, please.")
+parser.add_argument("--technology", help="CABLE, FIBER, SATELLITE, or DSL.")
+parser.add_argument("--users", help="(Integer) number of end users to represent (default: 1)")
 args = parser.parse_args()
-#if args.state:
-#    print "I specified a state: %s" % args.state
 
+# Json helper function
+def getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house):
+	js = {
+	    "content": {
+	        "down": {
+	            "corruption": {
+	                "correlation": 0,
+	                "percentage": 0
+	            },
+	            "delay": {
+	                "correlation": 0,
+	                "delay": str(int(round(delay))),
+	                "jitter": str(int(round(jitterdown)))
+	            },
+	            "iptables_options": [],
+	            "loss": {
+	                "correlation": 0,
+	                "percentage": str(percentloss)
+	            },
+	            "rate": str(int(round(downspeed))),
+	            "reorder": {
+	                "correlation": 0,
+	                "gap": 0,
+	                "percentage": 0
+	            }
+	        },
+	        "up": {
+	            "corruption": {
+	                "correlation": 0,
+	                "percentage": 0
+	            },
+	            "delay": {
+	                "correlation": 0,
+	                "delay": str(int(round(delay))),
+	                "jitter": str(int(round(jitterup)))
+	            },
+	            "iptables_options": [],
+	            "loss": {
+	                "correlation": 0,
+	                "percentage": str(percentloss)
+	            },
+	            "rate":str(int(round(upspeed))),
+	            "reorder": {
+	                "correlation": 0,
+	                "gap": 0,
+	                "percentage": 0
+	            }
+	        }
+	    },
+	    "id": 10,
+	    "name": "house" + str(house)
+	}
+	return js
+
+
+# Reading the database
 allcsv = pd.read_csv('full.csv')
 
-if args.houseid:
+try:
+	if args.houseid:
+		house = int(args.houseid)
+		housearray = allcsv[allcsv.unit_id == house]
+	if not args.houseid:
+		if args.state:
+			allcsv=allcsv[allcsv.STATE == args.state]
+		if args.price_range:
+			allcsv=allcsv[allcsv.price >= int(args.price_range.split("-")[0])]
+			allcsv=allcsv[allcsv.price <= int(args.price_range.split("-")[1])]
+		if args.technology:
+			allcsv=allcsv[allcsv.TECHNOLOGY == args.technology.upper()]
+		nusers = int(args.users) if args.users else 1
 
-	house=int(args.houseid)
-	
-	splitup = (allcsv[allcsv.unit_id == house][['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down']])
-	#convert it so it works in python histogram etc. float is python float64 is from numpy print float(splitup['Percent Loss'])
-	if splitup.empty:
-		print "The inputted house_ID is not in the database. Please try again"
-	else:
-		percentloss = float(splitup['Percent Loss'])
-		
-		latency = float(splitup['Latency'])/1000.0
-		
-		jitterup = float(splitup['jitter_up'])/1000.0
-		jitterdown = float(splitup['jitter_down'])/1000.0
-
-		speed = max(float(splitup['Speed_up']),float(splitup['Speed_down']))
-		downspeed = int(round(splitup['Speed_down'] * 0.008))
-		upspeed = int(round(splitup['Speed_up'] * 0.008))
-		print "for user:"
-		print "sudo tc qdisc add dev eth1 root handle 1:0 netem delay " + str(latency/2)+"ms "+ str(jitterup) + "ms loss "+str(percentloss)+"%"
-		print "sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit limit 500000000 burst 100000"		
-		print "for server:"
-		print "sudo tc qdisc add dev eth1 root netem delay " + str(latency/2)+"ms "+ str(jitterdown) + "ms loss "+str(percentloss)+"%"
-		print "sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(downspeed)+"kbit limit 500000000 burst 100000"
+		housearray = allcsv.sample(n=nusers)
+except ValueError:
+	print "\nThere are no households meeting the criteria you have set.\n"
+	sys.exit()
 
 
-	import geni.rspec.pg as PG
-	import geni.rspec.egext as EGX
-	import geni.rspec.igext as IGX
+# Compiling the rspec for geni
+r = PG.Request()
 
-	if splitup.empty:
-		print "The inputted house_ID is not in the database. Please try again"
-	else:
-		r = PG.Request()
+vms = []
+links = []
 
-		links = []
+servervm = IGX.XenVM('server')
 
-		for i in range(1):
-			links.insert(i, PG.LAN('lan%d' % i))
-    # Link bandwidth depends on which tier it's in
-			newspeed = int(round(speed * 0.008))
-			links[i].bandwidth = newspeed
+housecount = 0
 
-# The ith entry in the list, is a list of
-# all the links that the ith VM is connected to
-		con = [[0],[0]]
+for rowindex, houseinfo in housearray.iterrows():
 
-		ifaceCounter = 0
-		vms = []
-		for i in range(2):
-        #will name it Tier1-0, Tier1-1, etc
-			igvm = IGX.XenVM("Tier1-%d" % i)
-			vms.insert(i, igvm)
+    house = int(houseinfo.unit_id)
+    # Extract data for the selected household
+    splitup = houseinfo[['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down', 'SK down', 'SK UP', 'STATE', 'isp', 'price']]
+
+    if splitup.empty:
+    	# Get a random sample to suggest house id's to try
+    	sample_ids = allcsv.sample(n=5)['unit_id'].tolist()
+    	print "\nThere is no such houseid in the database."
+    	print "Try these: %s\n" % ", ".join(map(str, sample_ids))
+        sys.exit()
+
+    # Reading parameters, conversions
+    percentloss = float(splitup['Percent Loss']) / 2.0
+    delay = float(splitup['Latency']) / 1000.0 / 2
+
+    jitterup = float(splitup['jitter_up']) / 1000.0
+    jitterdown = float(splitup['jitter_down']) / 1000.0
+
+    downspeed = int(round(splitup['Speed_down'] * 0.008))
+    upspeed = int(round(splitup['Speed_up'] * 0.008))
+
+    speed = max(downspeed, upspeed)
+
+    print "Selected household %d has the following characteristics:" % house
+    print "Plan: %s/%s (Mbps down/up), %s %s" % (splitup['SK down'], splitup['SK UP'], splitup['isp'], splitup['STATE'])
+    if not np.isnan(float(splitup['price'])):
+        print "Estimated price per month: $%s" % splitup['price']
+    print "--------------------------------------------------------"
+    print " Upload rate (kbps)    | %d                             " % upspeed
+    print " Download rate (kbps)  | %d                             " % downspeed
+    print " Round-trip delay (ms) | %f                             " % (delay*2)
+    print " Uplink jitter (ms)    | %f                             " % jitterup
+    print " Downlink jitter (ms)  | %f                             " % jitterdown
+    print " Packet loss (%%)       | %f                             " % (percentloss*2)
+    print "--------------------------------------------------------"
+
+
+    def netem_template(delay, jitter, percentloss, speed, ip):
+    	statements = [
+    	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) root handle 1:0 netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip, delay, jitter, percentloss),
+    	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) parent 1:1 handle 10: tbf rate %dkbit limit 500000000 burst 100000" % (ip, speed)
+    	]
+    	return "; ".join(statements)
+
+    ip_netem = "10.0.%d.0" % housecount
+    user_netem = netem_template(delay, jitterup, percentloss, upspeed, ip_netem)
+    server_netem = netem_template(delay, jitterdown, percentloss, downspeed, ip_netem)
+
+    links.insert(housecount, PG.LAN('lan%d' % housecount))
+    links[housecount].bandwidth = speed
+
+
+    igvm = IGX.XenVM("house-%d" % house)
+    igvm.addService(PG.Execute(shell="/bin/sh", command=user_netem))
+    igvm.addService(PG.Execute(shell="/bin/sh", command="sudo apt-get update; sudo apt-get -y install iperf"))
+    vms.insert(housecount, igvm)
+
+    servervm.addService(PG.Execute(shell="/bin/sh", command=server_netem))
+
+
     # Generate interfaces and connections for this VM
-			for j in range(len(con[i])):
-        			linkno = con[i][j]
-        			iface = igvm.addInterface("if%d" % ifaceCounter)
-        			ifaceCounter += 1
-        			iface.addAddress(PG.IPv4Address("10.1.%d.%d" % (linkno, i+1), "255.255.255.0"))
-        			links[linkno].addInterface(iface)
-			r.addResource(igvm)
+    iface = igvm.addInterface("if-%d-1" % housecount)
+    iface.addAddress(PG.IPv4Address("10.0.%d.1" % housecount, "255.255.255.0"))
+    links[housecount].addInterface(iface)
 
-		for i in range(len(links)):
-			r.addResource(links[i])
-
-		r.writeXML("miniexperiment.xml")
-		print "Rspec written to file"
-
-	thejfile= '''{
-    "content": {
-        "down": {
-            "corruption": {
-                "correlation": 0,
-                "percentage": 0
-            },
-            "delay": {
-                "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterdown)+'''"
-            },
-            "iptables_options": [],
-            "loss": {
-                "correlation": 0,
-                "percentage":"'''+str(percentloss)+'''"
-            },
-            "rate":"'''+str(downspeed)+'''",
-            "reorder": {
-                "correlation": 0,
-                "gap": 0,
-                "percentage": 0
-            }
-        },
-        "up": {
-            "corruption": {
-                "correlation": 0,
-                "percentage": 0
-            },
-            "delay": {
-                "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterup)+'''"
-            },
-            "iptables_options": [],
-            "loss": {
-                "correlation": 0,
-                "percentage":"'''+str(percentloss)+'''"
-            },
-            "rate":"'''+str(upspeed)+'''",
-            "reorder": {
-                "correlation": 0,
-                "gap": 0,
-                "percentage": 0
-            }
-        }
-    },
-    "id": 10,
-    "name": "house'''+str(house)+'''"
-}'''
-
-	print thejfile
-
-else:
-	if args.state:
-		allcsv=allcsv[allcsv.STATE==args.state]
-	if args.price_range:
-		allcsv=allcsv[allcsv.price >= int(args.price_range.split("-")[0])]
-		allcsv=allcsv[allcsv.price <= int(args.price_range.split("-")[1])]
-	if args.Technology:
-		allcsv=allcsv[allcsv.TECHNOLOGY == args.Technology]
-	thishouse = random.randint(0,len(list(allcsv.unit_id))-1)
-	houseid=list(allcsv.unit_id)[thishouse]
-	house=int(houseid)
-
-        splitup = (allcsv[allcsv.unit_id == house][['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down']])
-        #convert it so it works in python histogram etc. float is python float64 is from numpy print float(splitup['Percent Loss'])
-        if splitup.empty:
-                print "The inputted house_ID is not in the database. Please try again"
-        else:
-                percentloss = float(splitup['Percent Loss'])
-
-                latency = float(splitup['Latency'])/1000.0
-
-                jitterup = float(splitup['jitter_up'])/1000.0
-                jitterdown = float(splitup['jitter_down'])/1000.0
-
-                speed = max(float(splitup['Speed_up']),float(splitup['Speed_down']))
-                downspeed = int(round(splitup['Speed_down'] * 0.008))
-                upspeed = int(round(splitup['Speed_up'] * 0.008))
-                print "for user:"
-                print "sudo tc qdisc add dev eth1 root handle 1:0 netem delay "+ str(latency/2)+"ms "+ str(jitterup) + "ms loss "+str(percentloss)+"%"
-                print "sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate "+str(upspeed)+"kbit limit 500000000 burst 100000"
-                print "for server:"
-                print "sudo tc qdisc add dev eth1 root netem delay " + str(latency/2)+"ms "+ str(jitterdown) + "ms loss "+str(percentloss)+"%"
-                print "sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate"+str(downspeed)+"kbit limit 500000000 burst 100000"
-
-
-        import geni.rspec.pg as PG
-        import geni.rspec.egext as EGX
-        import geni.rspec.igext as IGX
-
-        if splitup.empty:
-                print "The inputted house_ID is not in the database. Please try again"
-        else:
-                r = PG.Request()
-
-                links = []
-
-                for i in range(1):
-                        links.insert(i, PG.LAN('lan%d' % i))
-    # Link bandwidth depends on which tier it's in
-                        newspeed = int(round(speed * 0.008))
-                        links[i].bandwidth = newspeed
-
-# The ith entry in the list, is a list of
-# all the links that the ith VM is connected to
-                con = [[0],[0]]
-
-                ifaceCounter = 0
-                vms = []
-                for i in range(2):
-        #will name it Tier1-0, Tier1-1, etc
-                        igvm = IGX.XenVM("Tier1-%d" % i)
-                        vms.insert(i, igvm)
     # Generate interfaces and connections for this VM
-                        for j in range(len(con[i])):
-                                linkno = con[i][j]
-                                iface = igvm.addInterface("if%d" % ifaceCounter)
-                                ifaceCounter += 1
-                                iface.addAddress(PG.IPv4Address("10.1.%d.%d" % (linkno, i+1), "255.255.255.0"))
-                                links[linkno].addInterface(iface)
-                        r.addResource(igvm)
+    server_iface = servervm.addInterface("if-%d-2" % housecount)
+    server_iface.addAddress(PG.IPv4Address("10.0.%d.2" % housecount, "255.255.255.0"))
+    links[housecount].addInterface(server_iface)
 
-                for i in range(len(links)):
-                        r.addResource(links[i])
 
-                r.writeXML("miniexperiment.xml")
-                print "Rspec written to file"
+    r.addResource(igvm)
+    r.addResource(links[housecount])
 
-        thejfile= '''{
-    "content": {
-        "down": {
-            "corruption": {
-                "correlation": 0,
-                "percentage": 0
-            },
-            "delay": {
-                "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterdown)+'''"
-            },
-            "iptables_options": [],
-            "loss": {
-                "correlation": 0,
-                "percentage":"'''+str(percentloss)+'''"
-            },
-            "rate":"'''+str(downspeed)+'''",
-            "reorder": {
-                "correlation": 0,
-                "gap": 0,
-                "percentage": 0
-            }
-        },
-        "up": {
-            "corruption": {
-                "correlation": 0,
-                "percentage": 0
-            },
-            "delay": {
-                "correlation": 0,
-                "delay":"'''+str(latency/2)+'''",
-                "jitter":"'''+str(jitterup)+'''"
-            },
-            "iptables_options": [],
-            "loss": {
-                "correlation": 0,
-                "percentage":"'''+str(percentloss)+'''"
-            },
-            "rate":"'''+str(upspeed)+'''",
-            "reorder": {
-                "correlation": 0,
-                "gap": 0,
-                "percentage": 0
-            }
-        }
-    },
-    "id": 10,
-    "name": "house'''+str(house)+'''"
-}'''
+    housecount += 1
 
-        print thejfile
+    jfile = os.path.join( os.getcwd(), "house-%d.json" % house)
+    f = open(jfile, 'w')
+    json.dump(getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house), f)
+    f.close()
+    print "Json written to %s" % jfile
 
+vms.insert(housecount, servervm)
+
+servervm.addService(PG.Execute(shell="/bin/sh", command="sudo apt-get update; sudo apt-get -y install iperf"))
+r.addResource(servervm)
+
+# Determining the location for rspec
+rspec = os.path.join(os.getcwd(), "houses.xml")
+r.writeXML(rspec)
+print "Rspec written to %s\n" % rspec
