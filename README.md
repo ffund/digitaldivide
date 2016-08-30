@@ -78,6 +78,7 @@ The output should look something like this:
 
 ```
 Selected household 619842 has the following characteristics:
+Plan: 5/1 (Mbps down/up), Hughes OK
 --------------------------------------------------------
  Upload rate (kbps)    | 1852                             
  Download rate (kbps)  | 14127                             
@@ -172,7 +173,7 @@ on the server, then on the "house" node, run
 iperf -c server -w 400k -t 30 -i 5 -r
 ```
 
-to measure the throughput in each direction. The first report will be for uplink rate, and the second report will be for downlink rate. 
+to measure the throughput in each direction. The first report will be for uplink rate, and the second report will be for downlink rate. You should compare these numbers (and the `ping` results) to the output of the Python script for the household, and make sure that the link characteristics are approximately the same.
 
 ### Using ATC to model the specified household's netowork characteristics
 
