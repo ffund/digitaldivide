@@ -320,7 +320,7 @@ Some caveats:
 
 [1] "2015 Measuring Broadband America Fixed Report." Federal Communications Commission. 2015. [https://www.fcc.gov/reports-research/reports/measuring-broadband-america/measuring-broadband-america-2015](https://www.fcc.gov/reports-research/reports/measuring-broadband-america/measuring-broadband-america-2015)
 
-[2] Berman, Mark, Jeffrey S. Chase, Lawrence Landweber, Akihiro Nakao, Max Ott, Dipankar Raychaudhuri, Robert Ricci, and Ivan Seskar. "GENI: A federated testbed for innovative network experiments." _Computer Networks_ 61 (2014): 5-23. [http://dx.doi.org/10.1016/j.bjp.2013.12.037](http://dx.doi.org/10.1016/j.bjp.2013.12.037)
+[2] Mark Berman, Jeffrey S. Chase, Lawrence Landweber, Akihiro Nakao, Max Ott, Dipankar Raychaudhuri, Robert Ricci, and Ivan Seskar. "GENI: A federated testbed for innovative network experiments." _Computer Networks_ 61 (2014): 5-23. [http://dx.doi.org/10.1016/j.bjp.2013.12.037](http://dx.doi.org/10.1016/j.bjp.2013.12.037)
 
 [3] Chris Marra. "Building for emerging markets: The story behind 2G Tuesdays." Facebook Code. 27 Oct. 2015. [https://code.facebook.com/posts/1556407321275493/building-for-emerging-markets-the-story-behind-2g-tuesdays/](https://code.facebook.com/posts/1556407321275493/building-for-emerging-markets-the-story-behind-2g-tuesdays/)
 
