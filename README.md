@@ -86,9 +86,11 @@ Selected household 619842 has the following characteristics:
  Downlink jitter (ms)  | 17.932186                             
  Packet loss (%)       | 0.138555                             
 --------------------------------------------------------
-Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.xml
 Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.json
+Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/houses.xml
 ```
+
+It will create one RSpec (XML file), as awell as an ATC profile (JSON file) for each sampled household.
 
 If you would like to focus on a particular target demographic, you can filter by state, technology, or price range. Use 
 
