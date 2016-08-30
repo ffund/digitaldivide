@@ -37,7 +37,106 @@ Depending on how much control they need to have over the network and the endpoin
 
 
 We hope that the GENI network and the internet profile our tool generates will have an impact on researchers.  If a new advancement is tested on multiple households, researchers will get a better idea whether or not their application works under different circumstances. Our ultimate goal is for this tool to help researchers design more effective developements for everybody.
- 
+
+## Results
+
+Here are some sample results from a particular household, with ID 13451.
+
+When we run 
+
+```
+python src/finalexperiment.py --houseid 13451
+```
+
+we see the following expected link characteristics:
+
+```
+Selected household 13451 has the following characteristics:
+Plan: 25/25 (Mbps down/up), Verizon NY
+Estimated price per month: $74.99
+--------------------------------------------------------
+ Upload rate (kbps)    | 26087                             
+ Download rate (kbps)  | 30245                             
+ Round-trip delay (ms) | 10.620467                             
+ Uplink jitter (ms)    | 3.290144                             
+ Downlink jitter (ms)  | 1.192400                             
+ Packet loss (%)       | 0.045928                             
+--------------------------------------------------------
+Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-13451.json
+Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/houses.xml
+```
+
+When we reserve the topology in the "houses.xml" file on GENI, we find that the link speeds are approximately 26 Mbps up and 30 Mbps down, as expected:
+
+```
+ffund01@house-13451:~$ iperf -c server -w 400k -t 30 -i 2 -r
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  416 KByte (WARNING: requested  400 KByte)
+------------------------------------------------------------
+------------------------------------------------------------
+Client connecting to server, TCP port 5001
+TCP window size:  416 KByte (WARNING: requested  400 KByte)
+------------------------------------------------------------
+[  3] local 10.0.0.1 port 48922 connected with 10.0.0.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0- 2.0 sec  6.25 MBytes  26.2 Mbits/sec
+[  3]  2.0- 4.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3]  4.0- 6.0 sec  5.88 MBytes  24.6 Mbits/sec
+[  3]  6.0- 8.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3]  8.0-10.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3] 10.0-12.0 sec  5.88 MBytes  24.6 Mbits/sec
+[  3] 12.0-14.0 sec  5.88 MBytes  24.6 Mbits/sec
+[  3] 14.0-16.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3] 16.0-18.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3] 18.0-20.0 sec  5.62 MBytes  23.6 Mbits/sec
+[  3] 20.0-22.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3] 22.0-24.0 sec  5.88 MBytes  24.6 Mbits/sec
+[  3] 24.0-26.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3] 26.0-28.0 sec  5.88 MBytes  24.6 Mbits/sec
+[  3] 28.0-30.0 sec  6.00 MBytes  25.2 Mbits/sec
+[  3]  0.0-30.1 sec  89.4 MBytes  24.9 Mbits/sec
+[  5] local 10.0.0.1 port 5001 connected with 10.0.0.2 port 58396
+[  5]  0.0- 2.0 sec  6.77 MBytes  28.4 Mbits/sec
+[  5]  2.0- 4.0 sec  6.86 MBytes  28.8 Mbits/sec
+[  5]  4.0- 6.0 sec  6.90 MBytes  29.0 Mbits/sec
+[  5]  6.0- 8.0 sec  6.83 MBytes  28.7 Mbits/sec
+[  5]  8.0-10.0 sec  6.90 MBytes  29.0 Mbits/sec
+[  5] 10.0-12.0 sec  6.80 MBytes  28.5 Mbits/sec
+[  5] 12.0-14.0 sec  5.77 MBytes  24.2 Mbits/sec
+[  5] 14.0-16.0 sec  6.36 MBytes  26.7 Mbits/sec
+[  5] 16.0-18.0 sec  6.90 MBytes  28.9 Mbits/sec
+[  5] 18.0-20.0 sec  6.86 MBytes  28.8 Mbits/sec
+[  5] 20.0-22.0 sec  6.88 MBytes  28.9 Mbits/sec
+[  5] 22.0-24.0 sec  6.87 MBytes  28.8 Mbits/sec
+[  5] 24.0-26.0 sec  6.82 MBytes  28.6 Mbits/sec
+[  5] 26.0-28.0 sec  6.50 MBytes  27.2 Mbits/sec
+[  5] 28.0-30.0 sec  6.92 MBytes  29.0 Mbits/sec
+[  5]  0.0-30.2 sec   101 MBytes  28.2 Mbits/sec
+```
+
+And the round-trip latency is a little over 10 ms, as expected:
+
+
+```
+ffund01@house-13451:~$ ping server -c 10
+PING server-lan0 (10.0.0.2) 56(84) bytes of data.
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=1 ttl=64 time=14.0 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=2 ttl=64 time=12.1 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=3 ttl=64 time=10.4 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=4 ttl=64 time=9.59 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=5 ttl=64 time=12.0 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=6 ttl=64 time=8.64 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=7 ttl=64 time=8.66 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=8 ttl=64 time=12.6 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=9 ttl=64 time=7.71 ms
+64 bytes from server-lan0 (10.0.0.2): icmp_seq=10 ttl=64 time=7.92 ms
+
+--- server-lan0 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9016ms
+rtt min/avg/max/mdev = 7.711/10.378/14.044/2.095 ms
+```
+
 
 ## Run my experiment
 
@@ -175,25 +274,28 @@ iperf -c server -w 400k -t 30 -i 5 -r
 
 to measure the throughput in each direction. The first report will be for uplink rate, and the second report will be for downlink rate. You should compare these numbers (and the `ping` results) to the output of the Python script for the household, and make sure that the link characteristics are approximately the same. (However, note that for houses with high latency, jitter, and packet loss, the measured link speeds will probably be somewhat lower due to the effect of these impairments on TCP.)
 
-### Using ATC to model the specified household's netowork characteristics
+### Using ATC to browse the Internet with a specific household's network characteristics
 
-Follow instructions [here](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/) to set up the ATC web browsing part of the experiment.
+To use the ATC profile (JSON file) generated by our tool,follow the instructions in [2G Tuesdays: emulating realistic network conditions in emerging markets](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/) to set up ATC. However, before this step:
 
-Test that you have everything set up correctly by browsing under the provided profiles to check that the internet is being shaped
+> Finally, we'll set up some prepared network profiles. Open a third connection to "openvpn", and run:
+> 
+> ```
+> cd ~/augmented-traffic-control/utils/  
+> bash restore-profiles.sh localhost:8000  
+> ```
 
-Once finished with that: cd ~/augmented-traffic-control/utils/profiles on an openvpn node
+you should copy the JSON file(s) generated by the script to the `~/augmented-traffic-control/utils/profiles` directory on the "openvpn" node. Then, proceed with the ATC setup instructions.
 
-Add a new file titled (anything).json and copy the contents under "Rspec written to file" and ending with "}" to the new file in profiles.
+In the ATC web UI, you should see your sampled household(s) listed with their house ID: 
 
-run: cd .. 
 
-and then run: bash restore-profiles.sh localhost:8000 
+Test that you have everything set up correctly by browsing under the provided profiles to check that the internet is being shaped.
 
-Refresh http://10.8.0.1:8000, and you should see your new profile
 
-Select that profile, and surf the web on the proxied tab. You are now using an internet connection modelled by the sampled household!
+### Release resources
 
-Thank you for participating!
+When you have finished the experiment, please delete your resources on the GENI Portal to free them for use by other experimenters.
 
 ## Notes
 
