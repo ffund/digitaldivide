@@ -90,8 +90,25 @@ Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.xml
 Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.json
 ```
 
-If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, SATELLITE or DSL)
+If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, SATELLITE or DSL).
 
+For example, to get a link representative of a household with satellite Internet service, you could run:
+
+```
+python src/finalexperiment.py  --technology SATELLITE
+```
+
+or, to get a link representative of a household in NY state with satellite Internet service, you could run:
+
+```
+python src/finalexperiment.py  --technology SATELLITE --state NY
+```
+
+To get a link representative of a household that pays $30-40 per month for DSL service, you could run:
+
+```
+python src/finalexperiment.py  --technology DSL --price 30-40
+```
 
 ### Use GENI to model the specified household's netowork characteristics
 
