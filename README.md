@@ -1,8 +1,10 @@
 ## Background
 
- There exists a digital divide between web developers and internet users in the United States. Some households do not have high-speed Internet avavilable in their area, or cannot pay for high-speed Internet. As a result, there is a lot of variation in Internet speed across households in the US. We see this in the image below, which shows the relative frequency of different download speeds of US households. Meanwhile, web developers and researchers usually have top-notch internet connections. This disparity is called the "digital divide".
+ There exists a digital divide between web developers and internet users in the United States. Some households do not have high-speed Internet avavilable in their area, or cannot pay for high-speed Internet. As a result, there is a lot of variation in Internet speed across households in the US. We see this in the image below, which shows the relative frequency of different download speeds of US households sampled by the FCC as part of the Measuring Broadband America program [5]. 
  
  ![varying speeds graph](https://github.com/csmithsalzberg/CodeRealisticTestbeds/blob/master/percentDLwithColor.png) 
+ 
+ Meanwhile, web developers and researchers usually have top-notch internet connections. This disparity is called the "digital divide".
  
  Internet researchers and developers mainly use high-speed home or university Internet connections to test new ideas, or they use dedicated infrastructure called "testbeds" that have good quality links [1]. Sometimes they use a single device, or a small sample of machines to run tests, but these tests are done directly connected to university networks, which have much better speeds than most home users [2].  
  
