@@ -173,7 +173,7 @@ on the server, then on the "house" node, run
 iperf -c server -w 400k -t 30 -i 5 -r
 ```
 
-to measure the throughput in each direction. The first report will be for uplink rate, and the second report will be for downlink rate. You should compare these numbers (and the `ping` results) to the output of the Python script for the household, and make sure that the link characteristics are approximately the same.
+to measure the throughput in each direction. The first report will be for uplink rate, and the second report will be for downlink rate. You should compare these numbers (and the `ping` results) to the output of the Python script for the household, and make sure that the link characteristics are approximately the same. (However, note that for houses with high latency, jitter, and packet loss, the measured link speeds will probably be somewhat lower due to the effect of these impairments on TCP.)
 
 ### Using ATC to model the specified household's netowork characteristics
 
