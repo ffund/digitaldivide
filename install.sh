@@ -5,7 +5,7 @@
 # From http://geni-lib.readthedocs.io/en/stable/intro/ubuntu.html
 sudo apt-get update
 sudo apt-get -y install mercurial python-pip python-m2crypto python-dateutil python-lxml \
-  libxmlsec1 xmlsec1 libxmlsec1-openssl python-setuptools python-openssl libffi-dev 
+  python-dev libxmlsec1 xmlsec1 libxmlsec1-openssl python-setuptools python-openssl libffi-dev 
 
 cd ~  
 hg clone http://bitbucket.org/barnstorm/geni-lib
