@@ -90,7 +90,13 @@ Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.xml
 Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.json
 ```
 
-If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, SATELLITE or DSL).
+If you would like to focus on a particular target demographic, you can filter by state, technology, or price range. Use 
+
+```
+python src/finalexperiment.py --help
+```
+
+to get usage information.
 
 For example, to get a link representative of a household with satellite Internet service, you could run:
 
