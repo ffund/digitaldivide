@@ -148,6 +148,14 @@ Select that profile, and surf the web on the proxied tab. You are now using an i
 
 Thank you for participating!
 
+## Notes
+
+Some caveats:
+
+* The [tbf](http://lartc.org/manpages/tc-tbf.html) rate limiting may not work well at high data rates. Specifically, it may throttle the link _too_ much.
+* Other factors, like latency and packet loss, can affect the measured throughput.
+* The data in this repository comes from the 2015 edition of the Measuring Broadband America program, specfiically the validated data set from September 2014, and the Urban Rate Survey for the corresponding year. To repeat this analysis for another year, please refer to the [Appendix](https://github.com/csmithsalzberg/CodeRealisticTestbeds/blob/master/Appendix.md) which describes how we transformed the data set for use with our Python script.
+
 ## References
 
 [1] "2015 Measuring Broadband America Fixed Report." Federal Communications Commission. 2015. [https://www.fcc.gov/reports-research/reports/measuring-broadband-america/measuring-broadband-america-2015](https://www.fcc.gov/reports-research/reports/measuring-broadband-america/measuring-broadband-america-2015)
