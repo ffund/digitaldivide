@@ -81,7 +81,7 @@ Selected household 619842 has the following characteristics:
 --------------------------------------------------------
  Upload rate (kbps)    | 1852                             
  Download rate (kbps)  | 14127                             
- Round-trip delay (ms) | 520.933986                             
+ Round-trip delay (ms) | 1041.867972                             
  Uplink jitter (ms)    | 332.884326                             
  Downlink jitter (ms)  | 17.932186                             
  Packet loss (%)       | 0.138555                             
