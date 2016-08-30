@@ -297,7 +297,7 @@ When you get up to the part where you open the ATC web UI, you should see your s
 
 ![](https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/bridging-atcui-screenshot.png)
 
-and you can select one of them and apply them to your proxied browser.
+and you can select one of them and apply it to your proxied browser.
 
 Test that you have everything set up correctly by browsing under the provided profiles to check that the internet is being shaped.
 
