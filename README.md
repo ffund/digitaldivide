@@ -73,68 +73,25 @@ Then, run our script with
 python src/finalexperiment.py
 ```
 
-If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, or DSL)
 
 The output should look something like this: 
-<pre>
-for user:
-sudo tc qdisc add dev eth1 root handle 1:0 netem delay 9.2172741821ms 3.00476386913ms loss 0.0286073654638%
-sudo qdisc add dev eth1 parent 1:1 handle 10: tbf rate 1058kbit limit 500000000 burst 100000
-for server:
-sudo tc qdisc add dev eth1 root netem delay 9.2172741821ms 2.43315504979ms loss 0.0286073654638%
-sudo tc qdisc add dev eth1 parent 1:1 handle 10: tbf rate 15778kbit limit 500000000 burst 100000
-Rspec written to file
-{
-    "content": {
-        "down": {
-            "corruption": {
-                "correlation": 0,
-                "percentage": 0
-            },
-            "delay": {
-                "correlation": 0,
-                "delay":"9.2172741821",
-                "jitter":"2.43315504979"
-            },
-            "iptables_options": [],
-            "loss": {
-                "correlation": 0,
-                "percentage":"0.0286073654638"
-            },
-            "rate":"15778",
-            "reorder": {
-                "correlation": 0,
-                "gap": 0,
-                "percentage": 0
-            }
-        },
-        "up": {
-            "corruption": {
-                "correlation": 0,
-                "percentage": 0
-            },
-            "delay": {
-                "correlation": 0,
-                "delay":"9.2172741821",
-                "jitter":"3.00476386913"
-            },
-            "iptables_options": [],
-            "loss": {
-                "correlation": 0,
-                "percentage":"0.0286073654638"
-            },
-            "rate":"1058",
-            "reorder": {
-                "correlation": 0,
-                "gap": 0,
-                "percentage": 0
-            }
-        }
-    },
-    "id": 10,
-    "name": "house8334"
-}
-</pre>
+
+```
+Selected household 619842 has the following characteristics:
+--------------------------------------------------------
+ Upload rate (kbps)    | 1852.000000                             
+ Download rate (kbps)  | 14127.000000                             
+ Round-trip delay (ms) | 520.933986                             
+ Uplink jitter (ms)    | 332.884326                             
+ Downlink jitter (ms)  | 17.932186                             
+ Packet loss (%)       | 0.138555                             
+--------------------------------------------------------
+Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.xml
+Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.json
+```
+
+If you want to filter by state, technology, or price range: python finalexperiment.py --state (two letter code) --houseid (any number, but database doesn't include most) --price_range min-max --Technology (CABLE, FIBER, SATELLITE or DSL)
+
 
 ### Use GENI to model the specified household's netowork characteristics
 
