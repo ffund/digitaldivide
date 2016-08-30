@@ -79,8 +79,8 @@ The output should look something like this:
 ```
 Selected household 619842 has the following characteristics:
 --------------------------------------------------------
- Upload rate (kbps)    | 1852.000000                             
- Download rate (kbps)  | 14127.000000                             
+ Upload rate (kbps)    | 1852                             
+ Download rate (kbps)  | 14127                             
  Round-trip delay (ms) | 520.933986                             
  Uplink jitter (ms)    | 332.884326                             
  Downlink jitter (ms)  | 17.932186                             
