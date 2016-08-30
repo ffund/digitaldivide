@@ -154,9 +154,13 @@ qdisc netem 1: dev eth2 root refcnt 2 limit 1000 delay 5.3ms  1.2ms loss 0.04592
 qdisc tbf 10: dev eth2 parent 1:1 rate 30245Kbit burst 99993b lat 132.2s 
 ```
 
-At any of the "house" nodes, run `ping server` to see the latency settings that have been applied. 
+You should validate the link settings to confirm that they have been applied. At any of the "house" nodes, run 
 
-To validate the link speeds, run 
+```
+ping server
+```
+
+to measure the latency. To validate the link speeds, run 
 
 ```
 iperf -s -w 400k
@@ -170,7 +174,7 @@ iperf -c server -w 400k -t 30 -i 5 -r
 
 to measure the throughput in each direction. The first report will be for uplink rate, and the second report will be for downlink rate. 
 
-###Using ATC to model the specified household's netowork characteristics
+### Using ATC to model the specified household's netowork characteristics
 
 Follow instructions [here](https://witestlab.poly.edu/blog/2g-tuesdays-emulating-realistic-network-conditions-in-emerging-markets/) to set up the ATC web browsing part of the experiment.
 
