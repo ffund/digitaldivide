@@ -25,7 +25,7 @@ done
 #  iperf -c server -u -b 500k -t 90 -i 5 -l 90    > "/tmp/uljitter-$trial.txt"
 #done
 
-sums = grep -n "[SUM]" dlrate-0.txt #all the lines with sum and the line num 
-csvthing = last "sum" * 12 - first and second sums divided by 10 #returns avg ignoring first 10 secs. make sure to only search under bandwidth
+#sums = grep -n "[SUM]" dlrate-0.txt #all the lines with sum and the line num 
+#csvthing = last "sum" * 12 - first and second sums divided by 10 #returns avg ignoring first 10 secs. make sure to only search under bandwidth
 
 
