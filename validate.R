@@ -9,9 +9,11 @@ for (house in houses) {
   dat <- rbind(dat, d)
 }
 
-dat$houseID <- factor(dat$houseID)
-
 truth <- read.csv("truth.csv")
+
+
+dat$houseID <- factor(dat$houseID)
+truth$houseID <- factor(truth$houseID)
 
 q <- ggplot()
 q <- q + geom_boxplot(data=dat, aes(x=houseID, y=measure, group=houseID))
