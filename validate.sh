@@ -13,6 +13,11 @@ if [ "" == "$IPERF_OK" ]; then
 fi
 
 # Linux kernel tuning TODO
+sudo sysctl -w net.core.rmem_max=134217728 
+sudo sysctl -w net.core.wmem_max=134217728 
+sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 67108864"
+sudo sysctl -w net.ipv4.tcp_wmem="4096 65536 67108864"
+
 
 for trial in $(seq 0 10); do
   echo '[' `date` ']' " Ping test for trial $trial"

@@ -24,7 +24,7 @@ done
 for file in tmp/ping*; do
 
   mtype="latency"
-  latency=$(cat tmp/ping-1.txt | tail -1 | cut -d'/' -f5)
+  latency=$(cat $file | tail -1 | cut -d'/' -f5)
   trial=$(echo $file | awk -F'[-.]' '{print $2}')
   echo "$mtype,$trial,$latency"
 done
