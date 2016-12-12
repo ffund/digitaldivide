@@ -28,4 +28,10 @@ for file in tmp/ping*; do
   trial=$(echo $file | awk -F'[-.]' '{print $2}')
   echo "$mtype,$trial,$latency"
 done
+for file in tmp/udp*; do
 
+    mtype="loss"
+    loss=$(cat $file | tail -1 | cut -d'(' -f1)
+    trial=$(echo $file | awk -F'[-.]' '{print $2}')
+    echo "$mtype,$trial,$loss"
+done
