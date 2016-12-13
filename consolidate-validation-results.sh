@@ -39,7 +39,7 @@ done
 for file in tmp/udp*; do
 
     mtype="dljitter"
-    uljitter=$(cat $file | tail -1 | awk '{print $9}')
+    dljitter=$(cat $file | tail -1 | awk '{print $9}')
     trial=$(echo $file | awk -F'[-.]' '{print $2}')
     echo "$mtype,$trial,$dljitter"
 done
