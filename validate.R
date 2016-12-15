@@ -1,5 +1,5 @@
 
-houses <- c(10900,9164,243236,11750,12767,8478)
+houses <- c(10900,9164,243236,11750,12767,8478,1059,27140,10900)
 
 dat <- data.frame(houseID = factor(), type = factor(), trial = integer(), measure = numeric())
 
