@@ -24,8 +24,30 @@ done
 for file in tmp/ping*; do
 
   mtype="latency"
-  latency=$(cat tmp/ping-1.txt | tail -1 | cut -d'/' -f5)
+  latency=$(cat $file | tail -1 | cut -d'/' -f5)
   trial=$(echo $file | awk -F'[-.]' '{print $2}')
   echo "$mtype,$trial,$latency"
 done
+for file in tmp/udp*; do
 
+    mtype="loss"
+    loss=$(cat $file | tail -1 | cut -d'(' -f2 | cut -d'%' -f1)
+    trial=$(echo $file | awk -F'[-.]' '{print $2}')
+    echo "$mtype,$trial,$loss"
+done
+
+for file in tmp/udp*; do
+
+    mtype="dljitter"
+    dljitter=$(cat $file | grep '%' | tail -1 | awk '{print $9}')
+    trial=$(echo $file | awk -F'[-.]' '{print $2}')
+    echo "$mtype,$trial,$dljitter"
+done
+
+for file in tmp/udp*; do
+
+    mtype="uljitter"
+    uljitter=$(cat $file | grep '%' | head -1 | awk '{print $9}')
+    trial=$(echo $file | awk -F'[-.]' '{print $2}')
+    echo "$mtype,$trial,$uljitter"
+done
