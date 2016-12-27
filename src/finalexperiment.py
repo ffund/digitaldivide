@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import os
 import json
+import csv
 
 # Importing geni-lib
 import geni.rspec.pg as PG
@@ -147,6 +148,20 @@ for rowindex, houseinfo in housearray.iterrows():
     print " Packet loss (%%)       | %f                             " % (percentloss*2)
     print "--------------------------------------------------------"
 
+    def truth_template(houseid, ulrate, dlrate, latency, uljitter, dljitter, loss):
+        filename = "truth-%s.csv" % houseid
+        a = [["type","measure"], 
+		["ulrate", ulrate],
+		["dlrate", dlrate],
+		["latency", latency],
+		["uljitter", uljitter],
+		["dljitter", dljitter],
+		["loss", loss]
+            ]
+        with open(filename, "w") as f:
+            writer = csv.writer(f)
+            writer.writerows(a)
+
 
     def netem_template(delay, jitter, percentloss, speed, ip):
     	statements = [
@@ -166,6 +181,8 @@ for rowindex, houseinfo in housearray.iterrows():
     igvm = IGX.XenVM("house-%d" % house)
     igvm.addService(PG.Execute(shell="/bin/sh", command=user_netem))
     igvm.addService(PG.Execute(shell="/bin/sh", command="wget -qO- https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/iperfsetup.sh | bash"))
+    igvm.addService(PG.Execute(shell="/bin/sh", command="wget -O /tmp/consolidate-validation-results.sh https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/consolidate-validation-results.sh"))
+    igvm.addService(PG.Execute(shell="/bin/sh", command="wget -O /tmp/validate.sh https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/validate.sh"))
     vms.insert(housecount, igvm)
 
     servervm.addService(PG.Execute(shell="/bin/sh", command=server_netem))
@@ -194,6 +211,9 @@ for rowindex, houseinfo in housearray.iterrows():
     json.dump(getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house), f)
     f.close()
     print "Json written to %s" % jfile
+
+    truth_template(house, upspeed, downspeed, delay*2, jitterup, jitterdown, percentloss*2)
+
 
 vms.insert(housecount, servervm)
 
