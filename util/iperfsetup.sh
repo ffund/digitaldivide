@@ -10,7 +10,3 @@ if [ "" == "$IPERF_OK" ]; then
   sudo apt-get -y install iperf3
 fi
 
-# Start iperf servers
-iperf -s -D
-iperf -s -u -D
-iperf3 -s -D
