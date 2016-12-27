@@ -26,6 +26,6 @@ for i in l:
 #allcsv['price'] = pd.Series(prices, index=allcsv.index)
 pricefinal=pd.DataFrame(addprice)
 new=pd.merge(allcsv,pricefinal, on='unit_id', how='inner')
-new.to_csv('full.csv')
+new.to_csv('dat/full.csv')
 print 'merged'
 

@@ -77,7 +77,7 @@ def getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house)
 
 
 # Reading the database
-allcsv = pd.read_csv('full.csv')
+allcsv = pd.read_csv('dat/full.csv')
 
 try:
 	if args.houseid:

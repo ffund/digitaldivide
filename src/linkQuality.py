@@ -51,5 +51,5 @@ mergethree = pd.merge(mergetwo,jitterdownfinal, on='unit_id', how="inner")
 mergefour = pd.merge(mergethree,speedupfinal, on='unit_id' how="inner")
 mergefive = pd.merge(mergefour,speeddownfinal, on='unit_id', how="inner")
 finalmerge = pd.merge(mergefive,latencyfinal, on='unit_id', how="inner")
-finalmerge.to_csv("nonan.csv")
+finalmerge.to_csv("dat/nonan.csv")
 print "added to csv"

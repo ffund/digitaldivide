@@ -20,7 +20,7 @@ profile = profile[profile["TECHNOLOGY"] != "REMOVE"]
 #profile = profile[profile["SK UP"].tolist()[0].str.contains("[")==False]
 #profile = str(profile["SK UP"].tolist()[0]).contains("[")==False
 #print profile
-profile.to_csv("fixedishunitprofile.csv")
+profile.to_csv("dat/fixedishunitprofile.csv")
 #URS.to_csv("URS.csv")
 #print "profile:"
 #print list(set(profile["isp"]))
