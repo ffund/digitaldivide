@@ -150,8 +150,8 @@ for rowindex, houseinfo in housearray.iterrows():
 
     def netem_template(delay, jitter, percentloss, speed, ip):
     	statements = [
-    	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) root handle 1:0 netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip, delay, jitter, percentloss),
-    	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) parent 1:1 handle 10: tbf rate %dkbit limit 500000000 burst 100000" % (ip, speed)
+	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) root handle 1:0 tbf rate %dkbit limit 500000000 burst 100000" % (ip, speed),
+    	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) parent 1:1 handle 10: netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip, delay, jitter, percentloss)
     	]
     	return "; ".join(statements)
 
@@ -165,7 +165,7 @@ for rowindex, houseinfo in housearray.iterrows():
 
     igvm = IGX.XenVM("house-%d" % house)
     igvm.addService(PG.Execute(shell="/bin/sh", command=user_netem))
-    igvm.addService(PG.Execute(shell="/bin/sh", command="sudo apt-get update; sudo apt-get -y install iperf"))
+    igvm.addService(PG.Execute(shell="/bin/sh", command="wget -qO- https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/iperfsetup.sh | bash"))
     vms.insert(housecount, igvm)
 
     servervm.addService(PG.Execute(shell="/bin/sh", command=server_netem))
@@ -174,11 +174,13 @@ for rowindex, houseinfo in housearray.iterrows():
     # Generate interfaces and connections for this VM
     iface = igvm.addInterface("if-%d-1" % housecount)
     iface.addAddress(PG.IPv4Address("10.0.%d.1" % housecount, "255.255.255.0"))
+    #iface.bandwidth = upspeed
     links[housecount].addInterface(iface)
 
     # Generate interfaces and connections for this VM
     server_iface = servervm.addInterface("if-%d-2" % housecount)
     server_iface.addAddress(PG.IPv4Address("10.0.%d.2" % housecount, "255.255.255.0"))
+    #server_iface.bandwidth = downspeed
     links[housecount].addInterface(server_iface)
 
 
@@ -195,7 +197,7 @@ for rowindex, houseinfo in housearray.iterrows():
 
 vms.insert(housecount, servervm)
 
-servervm.addService(PG.Execute(shell="/bin/sh", command="sudo apt-get update; sudo apt-get -y install iperf"))
+servervm.addService(PG.Execute(shell="/bin/sh", command="wget -qO- https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/iperfsetup.sh | bash; iperf3 -s -D; iperf -s -u"))
 r.addResource(servervm)
 
 # Determining the location for rspec
