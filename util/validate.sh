@@ -27,8 +27,8 @@ for trial in $(seq 0 10); do
   # Test UL/DL speed
   # Server must be running 'iperf3 -s'
   echo '[' `date` ']' " UL/DL throughput test for trial $trial"
-  iperf3 -c server -i 5 -t 60 -P 3 -w 50k --format k        > "tmp/ulrate-$trial.txt"
-  iperf3 -c server -i 5 -t 60 -P 3 -w 50k -R --format k     > "tmp/dlrate-$trial.txt"
+  iperf3 -c server -i 5 -t 60 -P 3 --format k        > "tmp/ulrate-$trial.txt"
+  iperf3 -c server -i 5 -t 60 -P 3 -R --format k     > "tmp/dlrate-$trial.txt"
 
   # Test UL/DL jitter and packet loss
   # Server must be running 'iperf -s -u'
