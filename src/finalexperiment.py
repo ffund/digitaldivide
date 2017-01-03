@@ -71,7 +71,7 @@ def getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house)
 	            }
 	        }
 	    },
-	    "id": 10,
+	    "id": house,
 	    "name": "house" + str(house)
 	}
 	return js
@@ -94,7 +94,7 @@ try:
 			allcsv=allcsv[allcsv.TECHNOLOGY == args.technology.upper()]
 		nusers = int(args.users) if args.users else 1
 
-		housearray = allcsv.sample(n=nusers)
+		housearray = allcsv.sample(n=nusers, weights=weight)
 except ValueError:
 	print "\nThere are no households meeting the criteria you have set.\n"
 	sys.exit()
