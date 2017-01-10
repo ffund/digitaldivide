@@ -20,6 +20,10 @@ parser.add_argument("--houseid", help="Specify a household ID from the Measuring
 parser.add_argument("--price-range", help="A number, followed by a '-', followed by a number greater than the first (number is amount in dollars). Only integer values, please.")
 parser.add_argument("--technology", help="CABLE, FIBER, SATELLITE, or DSL.")
 parser.add_argument("--users", help="(Integer) number of end users to represent (default: 1)")
+parser.add_argument('--weights', help="Use weighted sample of households.", dest='useweights', action='store_true')
+parser.add_argument('--no-weights', help="Don't use weighted sample of households.", dest='useweights', action='store_false')
+parser.set_defaults(useweights=True)
+
 args = parser.parse_args()
 
 # Json helper function
@@ -78,7 +82,7 @@ def getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house)
 
 
 # Reading the database
-allcsv = pd.read_csv('dat/full.csv')
+allcsv = pd.read_csv('dat/household-internet-data.csv')
 
 try:
 	if args.houseid:
@@ -86,15 +90,19 @@ try:
 		housearray = allcsv[allcsv.unit_id == house]
 	if not args.houseid:
 		if args.state:
-			allcsv=allcsv[allcsv.STATE == args.state]
+			allcsv=allcsv[allcsv.state == args.state.upper()]
 		if args.price_range:
-			allcsv=allcsv[allcsv.price >= int(args.price_range.split("-")[0])]
-			allcsv=allcsv[allcsv.price <= int(args.price_range.split("-")[1])]
+			allcsv=allcsv[allcsv.monthly.charge >= int(args.price_range.split("-")[0])]
+			allcsv=allcsv[allcsv.monthly.charge <= int(args.price_range.split("-")[1])]
 		if args.technology:
-			allcsv=allcsv[allcsv.TECHNOLOGY == args.technology.upper()]
+			allcsv=allcsv[allcsv.technology == args.technology.upper()]
 		nusers = int(args.users) if args.users else 1
 
-		housearray = allcsv.sample(n=nusers, weights=weight)
+        if not args.useweights:
+		  housearray = allcsv.sample(n=nusers)
+        else:
+            housearray = allcsv.sample(n=nusers, weights=allcsv.weight)
+
 except ValueError:
 	print "\nThere are no households meeting the criteria you have set.\n"
 	sys.exit()
@@ -112,9 +120,10 @@ housecount = 0
 
 for rowindex, houseinfo in housearray.iterrows():
 
+
     house = int(houseinfo.unit_id)
     # Extract data for the selected household
-    splitup = houseinfo[['Percent Loss','Latency','jitter_up','jitter_down','Speed_up','Speed_down', 'SK down', 'SK UP', 'STATE', 'isp', 'price']]
+    splitup = houseinfo[['medianLoss','medianLatency','medianJitterUp','medianJitterDown','medianUp','medianDown', 'advertised.down', 'advertised.up', 'state', 'isp', 'monthly.charge', 'technology']]
 
     if splitup.empty:
     	# Get a random sample to suggest house id's to try
@@ -124,21 +133,21 @@ for rowindex, houseinfo in housearray.iterrows():
         sys.exit()
 
     # Reading parameters, conversions
-    percentloss = float(splitup['Percent Loss']) / 2.0
-    delay = float(splitup['Latency']) / 1000.0 / 2
+    percentloss = float(splitup['medianLoss']) / 2.0
+    delay = float(splitup['medianLatency']) / 1000.0 / 2
 
-    jitterup = float(splitup['jitter_up']) / 1000.0
-    jitterdown = float(splitup['jitter_down']) / 1000.0
+    jitterup = float(splitup['medianJitterUp']) / 1000.0
+    jitterdown = float(splitup['medianJitterDown']) / 1000.0
 
-    downspeed = int(round(splitup['Speed_down'] * 0.008))
-    upspeed = int(round(splitup['Speed_up'] * 0.008))
+    downspeed = int(round(splitup['medianDown'] * 0.008))
+    upspeed = int(round(splitup['medianUp'] * 0.008))
 
     speed = max(downspeed, upspeed)
 
     print "Selected household %d has the following characteristics:" % house
-    print "Plan: %s/%s (Mbps down/up), %s %s" % (splitup['SK down'], splitup['SK UP'], splitup['isp'], splitup['STATE'])
-    if not np.isnan(float(splitup['price'])):
-        print "Estimated price per month: $%s" % splitup['price']
+    print "Plan: %s/%s (Mbps down/up), %s (%s), %s" % (splitup['advertised.down'], splitup['advertised.up'], splitup['isp'], splitup['technology'], splitup['state'])
+    if not np.isnan(float(splitup['monthly.charge'])):
+        print "Estimated price per month: $%s" % splitup['monthly.charge']
     print "--------------------------------------------------------"
     print " Upload rate (kbps)    | %d                             " % upspeed
     print " Download rate (kbps)  | %d                             " % downspeed
