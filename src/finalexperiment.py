@@ -93,9 +93,9 @@ for rowindex, house in housearray.iterrows():
         star.add_household(h)
 
     if args.netemup:
-        print h.netem_template_up("10.0.%d.0" % housecount)
+        print h.netem_template_up("10.0.%d.0" % star.house_count)
     if args.netemdown:
-        print h.netem_template_down("10.0.%d.0" % housecount)
+        print h.netem_template_down("10.0.%d.0" % star.house_count)
 
     if args.json:
         jfile = os.path.join(output_dir, "house-%d.json" % h.unit_id)
