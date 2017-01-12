@@ -1,20 +1,21 @@
-
-import random
-import sys
-import pandas as pd
-import numpy as np
 import os
+import sys
+import random
 import json
 import csv
+import pandas as pd
+import numpy as np
 
-# Importing geni-lib
 import geni.rspec.pg as PG
-import geni.rspec.egext as EGX
 import geni.rspec.igext as IGX
+
+# Import local libraries
+import empathygap
 
 # Setting command line args
 import argparse
 parser = argparse.ArgumentParser()
+parser.add_argument("--output-dir", help="Specify a directory in which to put output files.")
 parser.add_argument("--state", help="Specify a state from which to draw a sample household. (two letter state code)")
 parser.add_argument("--houseid", help="Specify a household ID from the Measuring Broadband America data set.")
 parser.add_argument("--price-range", help="A number, followed by a '-', followed by a number greater than the first (number is amount in dollars). Only integer values, please.")
@@ -23,214 +24,100 @@ parser.add_argument("--users", help="(Integer) number of end users to represent 
 parser.add_argument('--weights', help="Use weighted sample of households.", dest='useweights', action='store_true')
 parser.add_argument('--no-weights', help="Don't use weighted sample of households.", dest='useweights', action='store_false')
 parser.set_defaults(useweights=True)
+parser.add_argument('--info', help="Print household information.", dest='info', action='store_true')
+parser.add_argument('--no-info', help="Don't print household information.", dest='info', action='store_false')
+parser.set_defaults(info=True)
+parser.add_argument('--rspec', help="Create an Rspec to use with GENI.", dest='rspec', action='store_true')
+parser.add_argument('--no-rspec', help="Don't create an Rspec.", dest='rspec', action='store_false')
+parser.set_defaults(rspec=False)
+parser.add_argument('--json', help="Create a JSON file to use with Augmented Traffic Control.", dest='json', action='store_true')
+parser.add_argument('--no-json', help="Don't create a JSON file for Augmented Traffic Control.", dest='json', action='store_false')
+parser.set_defaults(json=False)
+parser.add_argument('--netem-up', help="Print netem commands to use for uplink (on client).", dest='netemup', action='store_true')
+parser.set_defaults(netemup=False)
+parser.add_argument('--netem-down', help="Print netem commands to use for downlink (on server/router).", dest='netemdown', action='store_true')
+parser.set_defaults(netemdown=False)
+parser.add_argument('--validate', help="Prepare to validate link settings.", dest='validate', action='store_true')
+parser.add_argument('--no-validate', help="Don't prepare to validate link settings.", dest='validate', action='store_false')
+parser.set_defaults(validate=False)
+
 
 args = parser.parse_args()
 
-# Json helper function
-def getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house):
-	js = {
-	    "content": {
-	        "down": {
-	            "corruption": {
-	                "correlation": 0,
-	                "percentage": 0
-	            },
-	            "delay": {
-	                "correlation": 0,
-	                "delay": str(int(round(delay))),
-	                "jitter": str(int(round(jitterdown)))
-	            },
-	            "iptables_options": [],
-	            "loss": {
-	                "correlation": 0,
-	                "percentage": str(percentloss)
-	            },
-	            "rate": str(int(round(downspeed))),
-	            "reorder": {
-	                "correlation": 0,
-	                "gap": 0,
-	                "percentage": 0
-	            }
-	        },
-	        "up": {
-	            "corruption": {
-	                "correlation": 0,
-	                "percentage": 0
-	            },
-	            "delay": {
-	                "correlation": 0,
-	                "delay": str(int(round(delay))),
-	                "jitter": str(int(round(jitterup)))
-	            },
-	            "iptables_options": [],
-	            "loss": {
-	                "correlation": 0,
-	                "percentage": str(percentloss)
-	            },
-	            "rate":str(int(round(upspeed))),
-	            "reorder": {
-	                "correlation": 0,
-	                "gap": 0,
-	                "percentage": 0
-	            }
-	        }
-	    },
-	    "id": house,
-	    "name": "house" + str(house)
-	}
-	return js
 
-
-# Reading the database
+# Sample household(s)
 allcsv = pd.read_csv('dat/household-internet-data.csv')
 
-try:
-	if args.houseid:
-		house = int(args.houseid)
-		housearray = allcsv[allcsv.unit_id == house]
-	if not args.houseid:
-		if args.state:
-			allcsv=allcsv[allcsv.state == args.state.upper()]
-		if args.price_range:
-			allcsv=allcsv[allcsv.monthly.charge >= int(args.price_range.split("-")[0])]
-			allcsv=allcsv[allcsv.monthly.charge <= int(args.price_range.split("-")[1])]
-		if args.technology:
-			allcsv=allcsv[allcsv.technology == args.technology.upper()]
-		nusers = int(args.users) if args.users else 1
+if args.output_dir:
+    output_dir = args.output_dir
+else:
+    output_dir = os.getcwd()
 
-        if not args.useweights:
-		  housearray = allcsv.sample(n=nusers)
-        else:
-            housearray = allcsv.sample(n=nusers, weights=allcsv.weight)
+if not args.houseid:
+    if args.state:
+        allcsv = allcsv[allcsv.state == args.state.upper()]
+    if args.price_range:
+        allcsv = allcsv[allcsv.monthly.charge >= int(args.price_range.split("-")[0])]
+        allcsv = allcsv[allcsv.monthly.charge <= int(args.price_range.split("-")[1])]
+    if args.technology:
+        allcsv = allcsv[allcsv.technology == args.technology.upper()]
 
-except ValueError:
-	print "\nThere are no households meeting the criteria you have set.\n"
-	sys.exit()
+    nusers = int(args.users) if args.users else 1
 
+    if not args.useweights:
+        housearray = allcsv.sample(n=nusers)
+    else:
+        housearray = allcsv.sample(n=nusers, weights=allcsv.weight)
 
-# Compiling the rspec for geni
-r = PG.Request()
+if args.houseid:
+    house = int(args.houseid)
+    housearray = allcsv[allcsv.unit_id == house]
+    nusers = 1
 
-vms = []
-links = []
+if housearray.empty:
+    # Get a random sample to suggest house id's to try
+    sample_ids = allcsv.sample(n=5)['unit_id'].tolist()
+    print "\nThere is no unit with that ID in the data set."
+    print "Here are some valid IDs you can try: %s\n" % ", ".join(map(str, sample_ids))
+    sys.exit()
 
-servervm = IGX.XenVM('server')
+star = empathygap.Star()
+for rowindex, house in housearray.iterrows():
 
-housecount = 0
+    h = empathygap.Household(house)
 
-for rowindex, houseinfo in housearray.iterrows():
+    if args.info:
+        h.print_house_info()
 
+    if args.rspec:
+        star.add_household(h)
 
-    house = int(houseinfo.unit_id)
-    # Extract data for the selected household
-    splitup = houseinfo[['medianLoss','medianLatency','medianJitterUp','medianJitterDown','medianUp','medianDown', 'advertised.down', 'advertised.up', 'state', 'isp', 'monthly.charge', 'technology']]
+    if args.netemup:
+        print h.netem_template_up("10.0.%d.0" % housecount)
+    if args.netemdown:
+        print h.netem_template_down("10.0.%d.0" % housecount)
 
-    if splitup.empty:
-    	# Get a random sample to suggest house id's to try
-    	sample_ids = allcsv.sample(n=5)['unit_id'].tolist()
-    	print "\nThere is no such houseid in the database."
-    	print "Try these: %s\n" % ", ".join(map(str, sample_ids))
-        sys.exit()
+    if args.json:
+        jfile = os.path.join(output_dir, "house-%d.json" % h.unit_id)
+        with open(jfile, 'w') as f:
+            json.dump(h.json_template(), f)
+            print "JSON for Augmented Traffic Control written to %s" % jfile
 
-    # Reading parameters, conversions
-    percentloss = float(splitup['medianLoss']) / 2.0
-    delay = float(splitup['medianLatency']) / 1000.0 / 2
-
-    jitterup = float(splitup['medianJitterUp']) / 1000.0
-    jitterdown = float(splitup['medianJitterDown']) / 1000.0
-
-    downspeed = int(round(splitup['medianDown'] * 0.008))
-    upspeed = int(round(splitup['medianUp'] * 0.008))
-
-    speed = max(downspeed, upspeed)
-
-    print "Selected household %d has the following characteristics:" % house
-    print "Plan: %s/%s (Mbps down/up), %s (%s), %s" % (splitup['advertised.down'], splitup['advertised.up'], splitup['isp'], splitup['technology'], splitup['state'])
-    if not np.isnan(float(splitup['monthly.charge'])):
-        print "Estimated price per month: $%s" % splitup['monthly.charge']
-    print "--------------------------------------------------------"
-    print " Upload rate (kbps)    | %d                             " % upspeed
-    print " Download rate (kbps)  | %d                             " % downspeed
-    print " Round-trip delay (ms) | %f                             " % (delay*2)
-    print " Uplink jitter (ms)    | %f                             " % jitterup
-    print " Downlink jitter (ms)  | %f                             " % jitterdown
-    print " Packet loss (%%)       | %f                             " % (percentloss*2)
-    print "--------------------------------------------------------"
-
-    def truth_template(houseid, ulrate, dlrate, latency, uljitter, dljitter, loss):
-        filename = "truth-%s.csv" % houseid
-        a = [["type","measure"], 
-		["ulrate", ulrate],
-		["dlrate", dlrate],
-		["latency", latency],
-		["uljitter", uljitter],
-		["dljitter", dljitter],
-		["loss", loss]
-            ]
-        with open(filename, "w") as f:
+    if args.validate:
+        tfile = os.path.join(output_dir, "truth-%d.csv" % h.unit_id)
+        a = h.truth_template()
+        with open(tfile, "w") as f:
             writer = csv.writer(f)
             writer.writerows(a)
+            print "CSV of household link stats written to %s" % tfile
 
+        star.add_validate_services()
 
-    def netem_template(delay, jitter, percentloss, speed, ip):
-    	statements = [
-	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) root handle 1:0 tbf rate %dkbit limit 500000000 burst 100000" % (ip, speed),
-    	"sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) parent 1:1 handle 10: netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip, delay, jitter, percentloss)
-    	]
-    	return "; ".join(statements)
+if args.rspec:
 
-    ip_netem = "10.0.%d.0" % housecount
-    user_netem = netem_template(delay, jitterup, percentloss, upspeed, ip_netem)
-    server_netem = netem_template(delay, jitterdown, percentloss, downspeed, ip_netem)
+    r = PG.Request()
+    rspec = os.path.join(output_dir, "houses.xml")
+    star.rspec_template(r)
+    r.writeXML(rspec)
+    print "Rspec written to %s\n" % rspec
 
-    links.insert(housecount, PG.LAN('lan%d' % housecount))
-    links[housecount].bandwidth = speed
-
-
-    igvm = IGX.XenVM("house-%d" % house)
-    igvm.addService(PG.Execute(shell="/bin/sh", command=user_netem))
-    igvm.addService(PG.Execute(shell="/bin/sh", command="wget -qO- https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/iperfsetup.sh | bash"))
-    igvm.addService(PG.Execute(shell="/bin/sh", command="wget -O /tmp/consolidate-validation-results.sh https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/consolidate-validation-results.sh"))
-    igvm.addService(PG.Execute(shell="/bin/sh", command="wget -O /tmp/validate.sh https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/validate.sh"))
-    vms.insert(housecount, igvm)
-
-    servervm.addService(PG.Execute(shell="/bin/sh", command=server_netem))
-
-
-    # Generate interfaces and connections for this VM
-    iface = igvm.addInterface("if-%d-1" % housecount)
-    iface.addAddress(PG.IPv4Address("10.0.%d.1" % housecount, "255.255.255.0"))
-    #iface.bandwidth = upspeed
-    links[housecount].addInterface(iface)
-
-    # Generate interfaces and connections for this VM
-    server_iface = servervm.addInterface("if-%d-2" % housecount)
-    server_iface.addAddress(PG.IPv4Address("10.0.%d.2" % housecount, "255.255.255.0"))
-    #server_iface.bandwidth = downspeed
-    links[housecount].addInterface(server_iface)
-
-
-    r.addResource(igvm)
-    r.addResource(links[housecount])
-
-    housecount += 1
-
-    jfile = os.path.join( os.getcwd(), "house-%d.json" % house)
-    f = open(jfile, 'w')
-    json.dump(getJSON(delay, jitterdown, jitterup, upspeed, downspeed, percentloss, house), f)
-    f.close()
-    print "Json written to %s" % jfile
-
-    truth_template(house, upspeed, downspeed, delay*2, jitterup, jitterdown, percentloss*2)
-
-
-vms.insert(housecount, servervm)
-
-servervm.addService(PG.Execute(shell="/bin/sh", command="wget -qO- https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/iperfsetup.sh | bash; iperf3 -s -D; iperf -s -u"))
-servervm.addService(PG.Execute(shell="/bin/sh", command="sudo sysctl -w net.core.rmem_max=134217728; sudo sysctl -w net.core.wmem_max=134217728; sudo sysctl -w net.ipv4.tcp_rmem='4096 87380 67108864'; sudo sysctl -w net.ipv4.tcp_wmem='4096 65536 67108864'"))
-r.addResource(servervm)
-
-# Determining the location for rspec
-rspec = os.path.join(os.getcwd(), "houses.xml")
-r.writeXML(rspec)
-print "Rspec written to %s\n" % rspec
