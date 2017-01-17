@@ -33,8 +33,8 @@ class Household(object):
         self.latency_ms = h.get_value('medianLatency')/1000.0
         self.jitter_up_ms = h.get_value('medianJitterUp')/1000.0
         self.jitter_down_ms = h.get_value('medianJitterDown')/1000.0
-        self.rate_up_kbps = h.get_value('medianDown') * 0.008
-        self.rate_down_kbps = h.get_value('medianUp') * 0.008
+        self.rate_up_kbps = h.get_value('medianUp') * 0.008
+        self.rate_down_kbps = h.get_value('medianDown') * 0.008
         self.advertised_rate_up = h.get_value('advertised.up')
         self.advertised_rate_down = h.get_value('advertised.down')
         self.state = h.get_value('state')
