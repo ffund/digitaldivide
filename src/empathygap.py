@@ -237,10 +237,10 @@ class Star(object):
                            sudo sysctl -w net.core.wmem_max=134217728;
                            sudo sysctl -w net.ipv4.tcp_rmem='4096 87380 67108864';
                            sudo sysctl -w net.ipv4.tcp_wmem='4096 65536 67108864'"""
-        iperf_setup = "wget -qO- https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/iperfsetup.sh"
+        iperf_setup = "wget -qO- https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/util/iperfsetup.sh"
 
-        wget_validate = "wget -O /tmp/validate.sh https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/validate.sh"
-        wget_consolidate = "wget -O /tmp/consolidate-validation-results.sh https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/util/consolidate-validation-results.sh"
+        wget_validate = "wget -O /tmp/validate.sh https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/util/validate.sh"
+        wget_consolidate = "wget -O /tmp/consolidate-validation-results.sh https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/util/consolidate-validation-results.sh"
 
         self.router.addService(geni.rspec.pg.Execute(shell="/bin/sh", command="%s | bash; iperf3 -s -D; iperf -s -u" % iperf_setup))
         self.router.addService(geni.rspec.pg.Execute(shell="/bin/sh", command=kernel_tuning))

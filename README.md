@@ -14,7 +14,7 @@ To reproduce this experiment on GENI, you will need an account on the [GENI Port
 
  There exists a digital divide between web developers and internet users in the United States. Some households do not have high-speed Internet avavilable in their area, or cannot pay for high-speed Internet. As a result, there is a lot of variation in Internet speed across households in the US. We see this in the image below, which shows the relative frequency of different download speeds of US households sampled by the FCC as part of the Measuring Broadband America program [[1](#references)]. 
  
- ![varying speeds graph](https://github.com/csmithsalzberg/CodeRealisticTestbeds/blob/master/images/percentDLwithColor.png) 
+ ![varying speeds graph](https://github.com/csmithsalzberg/digitaldivide/blob/master/images/percentDLwithColor.png) 
  
  Meanwhile, web developers and researchers usually have top-notch internet connections. This disparity is a "digital divide" that creates an "empathy gap" between the developers/researchers and ordinary users.
  
@@ -33,7 +33,7 @@ When developers and researchers do not test their ideas on a variety of realisti
  
  The tool we created is a Python script that samples a random household from this dataset, and finds the measurements of that household's Internet connection in the data set. Researchers using our tool can also specify as input the state, price range, and/or technology so as to limit their outputs to households that represent a target group. For example, if a researcher is trying to make an application specifically for lower income communities, then the researcher would most likely search for a household paying a low price. The map below shows examples of households across the United States, paying different prices, with different ISPs, and in states with different average Internet speed, as a demonstration of the range of households researchers can emulate in their tests:
  
-  ![map](https://github.com/csmithsalzberg/CodeRealisticTestbeds/blob/master/images/mapwithheat.png) 
+  ![map](https://github.com/csmithsalzberg/digitaldivide/blob/master/images/mapwithheat.png) 
 
 Once an actual household is selected from the dataset, the information from the household can be used in two ways. Our code generates a "resource specification" (RSpec) file that can be used directly to create a small network on GENI. In the network, one VM represents the user, and the other represents the server (as shown in the image below). The link between the user and the server has the same qualities - upload speed, download speed, latency, jitter, and packet loss - as the selected household. The researchers can then log in to the VMs and run experiments over that link, which represents a real US household.
 
@@ -68,8 +68,8 @@ Estimated price per month: $74.99
  Downlink jitter (ms)  | 1.192400                             
  Packet loss (%)       | 0.045928                             
 --------------------------------------------------------
-Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-13451.json
-Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/houses.xml
+Json written to /home/ffund/Projects/digitaldivide/house-13451.json
+Rspec written to /home/ffund/Projects/digitaldivide/houses.xml
 ```
 
 When we reserve the topology in the "houses.xml" file on GENI, we find that the link speeds are approximately 26 Mbps up and 30 Mbps down, as expected:
@@ -146,17 +146,17 @@ rtt min/avg/max/mdev = 7.711/10.378/14.044/2.095 ms
 
 ## Run my experiment
 
-All of the materials needed are in the [CodeRealisticTestbeds](https://github.com/csmithsalzberg/CodeRealisticTestbeds) repository on GitHub.
+All of the materials needed are in the [digitaldivide](https://github.com/csmithsalzberg/digitaldivide) repository on GitHub.
 
 To run our Python script, you will need some prerequisite libraries:
 
 * [geni-lib](https://geni-lib.readthedocs.io/en/latest/)
 * [pandas](http://pandas.pydata.org/)
 
-On Ubuntu 14.04, you can download and install the prerequisite software by running the [install.sh](https://github.com/csmithsalzberg/CodeRealisticTestbeds/blob/master/install.sh) script in our repository:
+On Ubuntu 14.04, you can download and install the prerequisite software by running the [install.sh](https://github.com/csmithsalzberg/digitaldivide/blob/master/install.sh) script in our repository:
 
 ```
-wget https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/install.sh
+wget https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/install.sh
 bash install.sh
 ```
 (You can reserve a single VM with Ubuntu 14.04 on an InstaGENI aggregate for purposes of running this experiment, and set it up with that script.) Alternatively, if you prefer to run it on your own computer, you can install the prerequisites on other platforms:
@@ -168,8 +168,8 @@ bash install.sh
 Once you have installed the prerequisites, you should clone our repository, and navigate to its root directory:
 
 ```
-git clone https://github.com/csmithsalzberg/CodeRealisticTestbeds
-cd CodeRealisticTestbeds
+git clone https://github.com/csmithsalzberg/digitaldivide
+cd digitaldivide
 ```
 
 Then, run our script with
@@ -192,8 +192,8 @@ Plan: 5/1 (Mbps down/up), Hughes OK
  Downlink jitter (ms)  | 17.932186                             
  Packet loss (%)       | 0.138555                             
 --------------------------------------------------------
-Json written to /home/ffund/Projects/CodeRealisticTestbeds/house-619842.json
-Rspec written to /home/ffund/Projects/CodeRealisticTestbeds/houses.xml
+Json written to /home/ffund/Projects/digitaldivide/house-619842.json
+Rspec written to /home/ffund/Projects/digitaldivide/houses.xml
 ```
 
 It will create one RSpec (XML file), as awell as an ATC profile (JSON file) for each sampled household.
@@ -240,7 +240,7 @@ You can load the RSpec in either of two ways:
  
 The canvas should now show a server node and one or more "house" nodes (depending on the number of users you requested), like this:
 
-![](https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/images/bridging-empathy-topology.png)
+![](https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/images/bridging-empathy-topology.png)
 
 Click on "Site 1" and choose an InstaGENI site to bind to. Then click "Reserve Resources". Wait until your nodes are ready to log in, then log into each of the nodes using SSH. 
 
@@ -295,7 +295,7 @@ you should copy the JSON file(s) generated by the script to the `~/augmented-tra
 
 When you get up to the part where you open the ATC web UI, you should see your sampled household(s) listed with their house ID (in addition to the built-in profile): 
 
-![](https://raw.githubusercontent.com/csmithsalzberg/CodeRealisticTestbeds/master/images/bridging-atcui-screenshot.png)
+![](https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/images/bridging-atcui-screenshot.png)
 
 and you can select one of them and apply it to your proxied browser.
 

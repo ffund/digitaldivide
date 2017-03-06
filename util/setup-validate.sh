@@ -16,6 +16,6 @@ sudo sysctl -w net.core.wmem_max=134217728
 sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 67108864"
 sudo sysctl -w net.ipv4.tcp_wmem="4096 65536 67108864"
 
-git clone https://github.com/csmithsalzberg/CodeRealisticTestbeds.git
-cd CodeRealisticTestbeds/util
+git clone https://github.com/csmithsalzberg/digitaldivide.git
+cd digitaldivide/util
 bash install.sh
