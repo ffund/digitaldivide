@@ -16,4 +16,5 @@ cd ~
 
 # We need pandas version >= 0.16.1. 
 # The version in Ubuntu 14.04 repository is too old. So we get it from PyPI
+sudo pip install numpy
 sudo pip install pandas
