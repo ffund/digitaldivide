@@ -10,7 +10,7 @@ import geni.rspec.pg as PG
 import geni.rspec.igext as IGX
 
 # Import local libraries
-import empathygap
+import digitaldivide
 
 # Setting command line args
 import argparse
@@ -81,10 +81,10 @@ if housearray.empty:
     print "Here are some valid IDs you can try: %s\n" % ", ".join(map(str, sample_ids))
     sys.exit()
 
-star = empathygap.Star()
+star = digitaldivide.Star()
 for rowindex, house in housearray.iterrows():
 
-    h = empathygap.Household(house)
+    h = digitaldivide.Household(house)
 
     if args.info:
         h.print_house_info()
