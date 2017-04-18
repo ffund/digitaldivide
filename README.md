@@ -156,7 +156,7 @@ To run our Python script, you will need some prerequisite libraries:
 On Ubuntu 14.04, you can download and install the prerequisite software by running the [install.sh](https://github.com/csmithsalzberg/digitaldivide/blob/master/install.sh) script in our repository:
 
 ```
-wget https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/install.sh
+wget https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/util/install.sh
 bash install.sh
 ```
 (You can reserve a single VM with Ubuntu 14.04 on an InstaGENI aggregate for purposes of running this experiment, and set it up with that script.) Alternatively, if you prefer to run it on your own computer, you can install the prerequisites on other platforms:
