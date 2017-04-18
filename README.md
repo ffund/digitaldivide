@@ -175,7 +175,7 @@ cd digitaldivide
 Then, run our script with
 
 ```
-python src/finalexperiment.py
+python src/digitaldivideutil.py
 ```
 
 
