@@ -6,8 +6,6 @@ import csv
 import pandas as pd
 import numpy as np
 
-import geni.rspec.pg as PG
-import geni.rspec.igext as IGX
 
 # Import local libraries
 import digitaldivide
@@ -81,7 +79,8 @@ if housearray.empty:
     print "Here are some valid IDs you can try: %s\n" % ", ".join(map(str, sample_ids))
     sys.exit()
 
-star = digitaldivide.Star()
+if args.rspec:
+    star = digitaldivide.Star()
 for rowindex, house in housearray.iterrows():
 
     h = digitaldivide.Household(house)
@@ -114,10 +113,7 @@ for rowindex, house in housearray.iterrows():
         star.add_validate_services()
 
 if args.rspec:
-
-    r = PG.Request()
     rspec = os.path.join(output_dir, "houses.xml")
-    star.rspec_template(r)
-    r.writeXML(rspec)
+    star.rspec_write(rspec)
     print "Rspec written to %s\n" % rspec
 

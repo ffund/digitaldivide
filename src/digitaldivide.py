@@ -1,7 +1,5 @@
 """Summary
 """
-import geni.rspec.pg
-import geni.rspec.igext as IGX
 
 
 class Household(object):
@@ -183,9 +181,14 @@ class Star(object):
     house_count = 0
     server_count = 0
 
+
     def __init__(self):
         """Summary
         """
+
+        # Import optional libraries
+        import geni.rspec.igext as IGX
+
         self.households = []
         self.router = IGX.XenVM("router-%d" % self.server_count)
         self.links = []
@@ -202,8 +205,13 @@ class Star(object):
         Returns:
             TYPE: Description
         """
+
+        # Import optional libraries
+        import geni.rspec.pg as PG
+        import geni.rspec.igext as IGX
+
         speed = max(house.rate_up_kbps, house.rate_down_kbps)
-        self.links.insert(self.house_count_local, geni.rspec.pg.LAN('lan%d' % self.house_count))
+        self.links.insert(self.house_count_local, PG.LAN('lan%d' % self.house_count))
         self.links[self.house_count_local].bandwidth = int(speed)
 
         igvm = IGX.XenVM("house-%d" % house.unit_id)
@@ -212,16 +220,16 @@ class Star(object):
         user_netem = house.netem_template_up(ip_netem)
         server_netem = house.netem_template_down(ip_netem)
 
-        self.router.addService(geni.rspec.pg.Execute(shell="/bin/sh", command=server_netem))
-        igvm.addService(geni.rspec.pg.Execute(shell="/bin/sh", command=user_netem))
+        self.router.addService(PG.Execute(shell="/bin/sh", command=server_netem))
+        igvm.addService(PG.Execute(shell="/bin/sh", command=user_netem))
         self.households.insert(self.house_count_local, igvm)
 
         iface = igvm.addInterface("if-%d-1" % self.house_count)
-        iface.addAddress(geni.rspec.pg.IPv4Address("10.0.%d.1" % self.house_count, "255.255.255.0"))
+        iface.addAddress(PG.IPv4Address("10.0.%d.1" % self.house_count, "255.255.255.0"))
         self.links[self.house_count_local].addInterface(iface)
 
         server_iface = self.router.addInterface("if-%d-2" % self.house_count)
-        server_iface.addAddress(geni.rspec.pg.IPv4Address("10.0.%d.2" % self.house_count, "255.255.255.0"))
+        server_iface.addAddress(PG.IPv4Address("10.0.%d.2" % self.house_count, "255.255.255.0"))
         self.links[self.house_count_local].addInterface(server_iface)
 
         self.house_count_local += 1
@@ -233,6 +241,10 @@ class Star(object):
         Returns:
             TYPE: Description
         """
+
+        # Import optional libraries
+        import geni.rspec.pg as PG
+
         kernel_tuning = """sudo sysctl -w net.core.rmem_max=134217728;
                            sudo sysctl -w net.core.wmem_max=134217728;
                            sudo sysctl -w net.ipv4.tcp_rmem='4096 87380 67108864';
@@ -242,15 +254,16 @@ class Star(object):
         wget_validate = "wget -O /tmp/validate.sh https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/util/validate.sh"
         wget_consolidate = "wget -O /tmp/consolidate-validation-results.sh https://raw.githubusercontent.com/csmithsalzberg/digitaldivide/master/util/consolidate-validation-results.sh"
 
-        self.router.addService(geni.rspec.pg.Execute(shell="/bin/sh", command="%s | bash; iperf3 -s -D; iperf -s -u" % iperf_setup))
-        self.router.addService(geni.rspec.pg.Execute(shell="/bin/sh", command=kernel_tuning))
+        self.router.addService(PG.Execute(shell="/bin/sh", command="%s | bash; iperf3 -s -D; iperf -s -u" % iperf_setup))
+        self.router.addService(PG.Execute(shell="/bin/sh", command=kernel_tuning))
 
         for house in self.households:
-            house.addService(geni.rspec.pg.Execute(shell="/bin/sh", command="%s | bash" % iperf_setup))
-            house.addService(geni.rspec.pg.Execute(shell="/bin/sh", command=wget_consolidate))
-            house.addService(geni.rspec.pg.Execute(shell="/bin/sh", command=wget_validate))
+            house.addService(PG.Execute(shell="/bin/sh", command="%s | bash" % iperf_setup))
+            house.addService(PG.Execute(shell="/bin/sh", command=wget_consolidate))
+            house.addService(PG.Execute(shell="/bin/sh", command=wget_validate))
 
     def rspec_template(self, rspec):
+
         """Summary
 
         Args:
@@ -259,9 +272,27 @@ class Star(object):
         Returns:
             TYPE: Description
         """
+
         rspec.addResource(self.router)
         for house in self.households:
             rspec.addResource(house)
         for link in self.links:
             rspec.addResource(link)
         return rspec
+
+    def rspec_write(self, rspecfile):
+        """Summary
+
+        Args:
+            rspecfile (TYPE): Description
+
+        Returns:
+            TYPE: Description
+        """
+
+        # Import optional libraries
+        import geni.rspec.pg as PG
+
+        r = PG.Request()
+        self.rspec_template(r)
+        r.writeXML(rspecfile)
