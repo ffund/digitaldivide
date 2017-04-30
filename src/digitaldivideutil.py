@@ -52,11 +52,12 @@ else:
     output_dir = os.getcwd()
 
 if not args.houseid:
+    print allcsv
     if args.state:
         allcsv = allcsv[allcsv.state == args.state.upper()]
     if args.price_range:
-        allcsv = allcsv[allcsv.monthly.charge >= int(args.price_range.split("-")[0])]
-        allcsv = allcsv[allcsv.monthly.charge <= int(args.price_range.split("-")[1])]
+        allcsv = allcsv[allcsv['monthly.charge'] >= int(args.price_range.split("-")[0])]
+        allcsv = allcsv[allcsv['monthly.charge'] <= int(args.price_range.split("-")[1])]
     if args.technology:
         allcsv = allcsv[allcsv.technology == args.technology.upper()]
 
