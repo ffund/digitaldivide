@@ -40,7 +40,7 @@ class Household(object):
         self.monthly_charge = h.get_value('monthly.charge')
         self.technology = h.get_value('technology')
 
-    def netem_template_up(self, ip_address):
+    def netem_template_up(self, ip_address_str):
         """Summary
 
         Args:
@@ -50,12 +50,12 @@ class Household(object):
             TYPE: Description
         """
         statements = [
-            "sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) root handle 1:0 tbf rate %dkbit limit 500000000 burst 100000" % (ip_address, self.rate_up_kbps),
-            "sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) parent 1:1 handle 10: netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip_address, self.latency_ms/2.0, self.jitter_up_ms, self.loss/2.0)
+            "sudo tc qdisc add dev %s root handle 1:0 tbf rate %dkbit limit 500000000 burst 100000" % (ip_address_str, self.rate_up_kbps),
+            "sudo tc qdisc add dev %s parent 1:1 handle 10: netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip_address_str, self.latency_ms/2.0, self.jitter_up_ms, self.loss/2.0)
         ]
         return "; ".join(statements)
 
-    def netem_template_down(self, ip_address):
+    def netem_template_down(self, ip_address_str):
         """Summary
 
         Args:
@@ -65,8 +65,8 @@ class Household(object):
             TYPE: Description
         """
         statements = [
-            "sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) root handle 1:0 tbf rate %dkbit limit 500000000 burst 100000" % (ip_address, self.rate_down_kbps),
-            "sudo tc qdisc add dev $(ip route get %s | head -n 1 | cut -d \  -f4) parent 1:1 handle 10: netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip_address, self.latency_ms/2.0, self.jitter_down_ms, self.loss/2.0)
+            "sudo tc qdisc add dev %s root handle 1:0 tbf rate %dkbit limit 500000000 burst 100000" % (ip_address_str, self.rate_down_kbps),
+            "sudo tc qdisc add dev %s parent 1:1 handle 10: netem delay %0.6fms %0.6fms loss %0.6f%%" % (ip_address_str, self.latency_ms/2.0, self.jitter_down_ms, self.loss/2.0)
         ]
         return "; ".join(statements)
 
@@ -217,8 +217,9 @@ class Star(object):
         igvm = IGX.XenVM("house-%d" % house.unit_id)
 
         ip_netem = "10.0.%d.0" % self.house_count
-        user_netem = house.netem_template_up(ip_netem)
-        server_netem = house.netem_template_down(ip_netem)
+	netem_str = "$(ip route get %s | head -n 1 | cut -d \  -f4)" % (ip_netem)
+        user_netem = house.netem_template_up(netem_str)
+        server_netem = house.netem_template_down(netem_str)
 
         self.router.addService(PG.Execute(shell="/bin/sh", command=server_netem))
         igvm.addService(PG.Execute(shell="/bin/sh", command=user_netem))

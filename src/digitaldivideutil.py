@@ -52,7 +52,6 @@ else:
     output_dir = os.getcwd()
 
 if not args.houseid:
-    print allcsv
     if args.state:
         allcsv = allcsv[allcsv.state == args.state.upper()]
     if args.price_range:
@@ -93,9 +92,9 @@ for rowindex, house in housearray.iterrows():
         star.add_household(h)
 
     if args.netemup:
-        print h.netem_template_up("10.0.%d.0" % star.house_count)
+        print h.netem_template_up("eth0")
     if args.netemdown:
-        print h.netem_template_down("10.0.%d.0" % star.house_count)
+        print h.netem_template_down("eth0")
 
     if args.json:
         jfile = os.path.join(output_dir, "house-%d.json" % h.unit_id)
