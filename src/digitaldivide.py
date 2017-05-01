@@ -1,5 +1,20 @@
 """Summary
 """
+import pandas as pd
+
+class HouseholdSet(object):
+
+    def __init__(self, path):
+
+        self.data = pd.read_csv(path)
+
+    def sample(self):
+
+        return self.data.sample(n=1, weights=self.data.weight)
+
+    def sample_n(self, nusers):
+
+        return self.data.sample(n=nusers, weights=self.data.weight)
 
 
 class Household(object):
@@ -217,7 +232,7 @@ class Star(object):
         igvm = IGX.XenVM("house-%d" % house.unit_id)
 
         ip_netem = "10.0.%d.0" % self.house_count
-	netem_str = "$(ip route get %s | head -n 1 | cut -d \  -f4)" % (ip_netem)
+        netem_str = "$(ip route get %s | head -n 1 | cut -d \  -f4)" % (ip_netem)
         user_netem = house.netem_template_up(netem_str)
         server_netem = house.netem_template_down(netem_str)
 
