@@ -69,7 +69,7 @@ if not args.houseid:
 
 if args.houseid:
     house = int(args.houseid)
-    housearray = allcsv[allcsv.unit_id == house]
+    housearray = allcsv[allcsv.unit_id == house].tail(1)
     nusers = 1
 
 if housearray.empty:
